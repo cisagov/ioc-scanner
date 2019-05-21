@@ -1,0 +1,7 @@
+few things that should hit:
+GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin18)
+0313fd399b143fc40cd52a1679018305
+GNU bash, version 4.4.12(1)-release (x86_64-pc-linux-gnu)
+ac56f4b8fac5739ccdb45777d313becf
+EICAR test file
+69630e4574ec6798239b091cda43dca0
