@@ -36,7 +36,9 @@ def test_version(capsys):
 @pytest.mark.parametrize("level", log_levels)
 def test_log_levels(level):
     """Validate commandline log-level arguments."""
-    with patch.object(sys, "argv", ["bogus", f"--log-level={level}", "--target=."]):
+    with patch.object(
+        sys, "argv", ["bogus", f"--log-level={level}", "--target=tests/targets"]
+    ):
         with patch.object(logging.root, "handlers", []):
             assert (
                 logging.root.hasHandlers() is False
@@ -48,16 +50,41 @@ def test_log_levels(level):
             assert return_code == 0, "main() should return success (0)"
 
 
-def test_scan_file():
+def test_scan_file(capsys):
     """Test running the scanner with an input target file."""
     with patch.object(
-        sys, "argv", ["bogus", "--file=tests/testblob.txt", "--target=tests/eicar.txt"]
+        sys,
+        "argv",
+        [
+            "bogus",
+            "--log-level=debug",
+            "--file=tests/testblob.txt",
+            "--target=tests/targets",
+        ],
     ):
         ioc_scan_cli.main()
+    captured = capsys.readouterr()
+    print(captured.out)
+    assert (
+        captured.out.count("eicar.txt") == 1
+    ), "standard out should contain eicar detection with filename"
+    assert (
+        captured.out.count("69630e4574ec6798239b091cda43dca0") == 2
+    ), "standard out should detection and tally should match hash"
 
 
-def test_scan_stdin():
+def test_scan_stdin(capsys):
     """Test running the scanner with an input target file."""
-    with patch.object(sys, "argv", ["bogus", "--stdin", "--target=tests/eicar.txt"]):
+    with patch.object(
+        sys, "argv", ["bogus", "--log-level=debug", "--stdin", "--target=tests/targets"]
+    ):
         with patch("sys.stdin", StringIO("69630e4574ec6798239b091cda43dca0")):
             ioc_scan_cli.main()
+    captured = capsys.readouterr()
+    print(captured.out)
+    assert (
+        captured.out.count("eicar.txt") == 1
+    ), "standard out should contain eicar detection with filename"
+    assert (
+        captured.out.count("69630e4574ec6798239b091cda43dca0") == 2
+    ), "standard out should detection and tally should match hash"
