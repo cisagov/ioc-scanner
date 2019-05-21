@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+"""Indicators of compromise (IoC) scanning tool.
+
+This script can take a blob of text that "should" contain MD5 hashes
+and scan a machine looking for files that match.  It will report the
+location of each mataching file as well as a summary containing the
+tallies by hash.  Execution time is also reported.
+
+This script should be run as a priveledged user.
+
+Usage:
+  ioc-scan [--log-level=LEVEL] [--stdin | --file=hashfile] [--target=root]
+  ioc-scan (-h | --help)
+
+Options:
+  -h --help              Show this message.
+  -f --file=hashfile     Search for hashes in specified file.
+  -L --log-level=LEVEL   If specified, then the log level will be set to
+                         the specified value.  Valid values are "debug", "info",
+                         "warning", "error", and "critical". [default: warning]
+  -s --stdin             Search for hashes on stdin.
+  -t --target=root       Scan target root directory. [default: /]
+"""
+
+import logging
+import sys
+
+import docopt
+
+from ._version import __version__
+from . import ioc_scanner
+
+
+def main():
+    """Set up logging and call the ioc-scanner."""
+    args = docopt.docopt(__doc__, version=__version__)
+    # Set up logging
+    log_level = args["--log-level"]
+    try:
+        logging.basicConfig(
+            format="%(asctime)-15s %(levelname)s %(message)s", level=log_level.upper()
+        )
+    except ValueError:
+        logging.critical(
+            f'"{log_level}" is not a valid logging level.  Possible values '
+            "are debug, info, warning, and error."
+        )
+        return 1
+
+    # see if the user is providing any external hash blob data
+    hashblob = None
+    if args["--stdin"] is True:
+        logging.debug("Reading hashes from stdin")
+        hashblob = sys.stdin.read()
+    elif args["--file"] is not None:
+        logging.debug(f"Reading hashes from {args['--file']}")
+        with open(args["--file"]) as f:
+            hashblob = f.read()
+
+    exit_code = ioc_scanner.main(hashblob, args["--target"])
+
+    # Stop logging and clean up
+    logging.shutdown()
+    return exit_code
+
+
+if __name__ == "__main__":
+    sys.exit(main())

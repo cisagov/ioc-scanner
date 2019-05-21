@@ -1,5 +1,5 @@
 """
-This is the setup module for the example project.
+This is the setup module for the ioc-scan project.
 
 Based on:
 
@@ -29,16 +29,16 @@ def package_vars(version_file):
 
 
 setup(
-    name="example",
+    name="ioc-scan",
     # Versions should comply with PEP440
-    version=package_vars("src/example/_version.py")["__version__"],
-    description="Example python library",
+    version=package_vars("src/ioc_scan/_version.py")["__version__"],
+    description="IoC scanning tool",
     long_description=readme(),
     long_description_content_type="text/markdown",
     # NCATS "homepage"
     url="https://www.us-cert.gov/resources/ncats",
     # The project's main homepage
-    download_url="https://github.com/cisagov/skeleton-python-library",
+    download_url="https://github.com/cisagov/ioc-scanner",
     # Author details
     author="Cyber and Infrastructure Security Agency",
     author_email="ncats@hq.dhs.gov",
@@ -49,7 +49,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         # Indicate who your project is intended for
         "Intended Audience :: Developers",
         # Pick your license as you wish (should match "license" above)
@@ -61,13 +61,18 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     # What does your project relate to?
-    keywords="skeleton",
+    keywords="ioc scanner indicators compromise md5",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
     include_package_data=True,
     install_requires=["docopt"],
     extras_require={"test": ["pre-commit", "pytest", "pytest-cov", "coveralls"]},
-    # Conveniently allows one to run the CLI tool as `example`
-    entry_points={"console_scripts": ["example = example.example:main"]},
+    # Conveniently allows one to run the CLI tool as `ioc-scan`
+    entry_points={
+        "console_scripts": [
+            "ioc-scan = ioc_scan.ioc_scan_cli:main",
+            "ioc-scan-bare = ioc_scan.ioc_scanner:main",
+        ]
+    },
 )
