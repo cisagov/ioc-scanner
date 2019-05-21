@@ -48,16 +48,30 @@ def test_log_levels(level):
             assert return_code == 0, "main() should return success (0)"
 
 
-def test_scan_file():
+def test_scan_file(capsys):
     """Test running the scanner with an input target file."""
     with patch.object(
         sys, "argv", ["bogus", "--file=tests/testblob.txt", "--target=tests/eicar.txt"]
     ):
         ioc_scan_cli.main()
+    captured = capsys.readouterr()
+    assert (
+        captured.out.count("69630e4574ec6798239b091cda43dca0 tests/eicar.txt") == 1
+    ), "standard out should contain eicar detection with filename"
+    assert (
+        captured.out.count("69630e4574ec6798239b091cda43dca0    1") == 1
+    ), "standard out should contain eicar detection and tally"
 
 
-def test_scan_stdin():
+def test_scan_stdin(capsys):
     """Test running the scanner with an input target file."""
     with patch.object(sys, "argv", ["bogus", "--stdin", "--target=tests/eicar.txt"]):
         with patch("sys.stdin", StringIO("69630e4574ec6798239b091cda43dca0")):
             ioc_scan_cli.main()
+    captured = capsys.readouterr()
+    assert (
+        captured.out.count("69630e4574ec6798239b091cda43dca0 tests/eicar.txt") == 1
+    ), "standard out should contain eicar detection with filename"
+    assert (
+        captured.out.count("69630e4574ec6798239b091cda43dca0    1") == 1
+    ), "standard out should contain eicar detection and tally"
