@@ -8,8 +8,8 @@ of contribution, and don't want a wall of rules to get in the way of
 that.
 
 Before contributing, we encourage you to read our CONTRIBUTING policy
-(you are here), our [LICENSE](LICENSE.md), and our
-[README](README.md), all of which should be in this repository.
+(you are here), our [LICENSE](LICENSE), and our [README](README.md),
+all of which should be in this repository.
 
 ## Issues ##
 
@@ -77,7 +77,7 @@ Once `pyenv` and `pyenv-virtualenv` are installed on your system, you
 can create and configure the Python virtual environment with these
 commands:
 
-```bash
+```console
 cd ioc-scanner
 pyenv virtualenv <python_version_to_use> ioc-scanner
 pyenv local ioc-scanner
@@ -88,7 +88,7 @@ pip install -r requirements-dev.txt
 
 Now setting up pre-commit is as simple as:
 
-```bash
+```console
 pre-commit install
 ```
 
