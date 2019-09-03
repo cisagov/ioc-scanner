@@ -58,6 +58,14 @@ available without a lengthy install process.  There is an embedded hash
 list this file that can be easily edited.  This makes running the script
 with tools like [Ansible](https://www.ansible.com) much simpler.
 
+Here is an example of running the script remotely using the Ansible
+[script module](https://docs.ansible.com/ansible/latest/modules/script_module.html):
+
+```console
+ansible --inventory=hosts-file cloud-group -m script -a src/ioc_scan/ioc_scanner.py \
+--become --ask-become-pass --user="ian.kilmister"
+```
+
 ## Contributing ##
 
 We welcome contributions!  Please see [here](CONTRIBUTING.md) for
