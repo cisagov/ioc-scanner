@@ -62,8 +62,9 @@ Here is an example of running the script remotely using the Ansible
 [script module](https://docs.ansible.com/ansible/latest/modules/script_module.html):
 
 ```console
-ansible --inventory=hosts-file cloud-group -m script -a src/ioc_scan/ioc_scanner.py \
---become --ask-become-pass --user="ian.kilmister"
+ansible --inventory=hosts-file cool-servers --module-name=script \
+--args="src/ioc_scan/ioc_scanner.py" --become --ask-become-pass \
+--user="ian.kilmister"
 ```
 
 ## Contributing ##
