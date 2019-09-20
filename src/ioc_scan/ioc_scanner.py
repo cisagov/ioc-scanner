@@ -54,12 +54,16 @@ def hash_file(file):
     hash_sha1 = hashlib.sha1()  # nosec
     hash_sha256 = hashlib.sha256()
 
-    with open(file, "rb") as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            hash_md5.update(chunk)
-            hash_sha1.update(chunk)
-            hash_sha256.update(chunk)
-
+    # try except to eat filesystem errors like Permission Denied etc
+    try:
+        with open(file, "rb") as f:
+            # read it in chunks so memory use isn't outlandish
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+                hash_sha1.update(chunk)
+                hash_sha256.update(chunk)
+    except OSError:
+        pass
     return (hash_md5.hexdigest(), hash_sha1.hexdigest(), hash_sha256.hexdigest())
 
 
@@ -76,10 +80,15 @@ def main(blob=None, root="/"):
     indicators_sha1 = re.findall(SHA1_RE, blob.lower())
     indicators_sha256 = re.findall(SHA256_RE, blob.lower())
     indicators = indicators_md5 + indicators_sha1 + indicators_sha256
+
     logging.debug(f"Scan will search for {len(indicators)} indicators")
+
+    # compile a regular expression to search for all indicators
+    indicators_re = re.compile("|".join(indicators))
 
     # start hashing files
     logging.debug(f"Starting scan with root: {root}")
+
     # store an array of ioc hits
     ioc_list = []
     # keep a tally of the hits
@@ -90,11 +99,17 @@ def main(blob=None, root="/"):
         subdirs[:] = [
             d for d in subdirs if not os.path.ismount(os.path.join(rootdir, d))
         ]
+
         # check each file in the current directory
         for file in [os.path.join(rootdir, f) for f in files]:
+            # get hashes for the current file
             hashes = hash_file(file)
+
             for hash in hashes:
-                if hash in indicators:
+                matches = indicators_re.findall(hash)
+
+                # tally it up and report if we get a hit
+                if matches:
                     ioc_list.append(f"{hash} {file}")
                     tallies[hash] += 1
 
