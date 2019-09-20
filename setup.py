@@ -16,7 +16,7 @@ from setuptools import setup, find_packages
 
 def readme():
     """Read in and return the contents of the project's README.md file."""
-    with open("README.md") as f:
+    with open("README.md", encoding="utf-8") as f:
         return f.read()
 
 
@@ -66,7 +66,7 @@ setup(
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
     include_package_data=True,
-    install_requires=["docopt"],
+    install_requires=["docopt", "setuptools"],
     extras_require={"test": ["pre-commit", "pytest", "pytest-cov", "coveralls"]},
     # Conveniently allows one to run the CLI tool as `ioc-scan`
     entry_points={
