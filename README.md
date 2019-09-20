@@ -12,7 +12,7 @@ strings that look like `md5` hashes.
 
 ## Command line usage ##
 
-```bash
+```console
 Usage:
   ioc-scan [--log-level=LEVEL] [--stdin | --file=hashfile] [--target=root]
   ioc-scan (-h | --help)
@@ -29,7 +29,7 @@ Options:
 
 ## Example output ##
 
-```bash
+```console
 ❱ ioc-scan --target /bin
 0313fd399b143fc40cd52a1679018305 /bin/bash
 
