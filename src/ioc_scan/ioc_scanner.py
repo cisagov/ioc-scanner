@@ -43,6 +43,7 @@ EICAR test file
 69630e4574ec6798239b091cda43dca0
 """
 
+# use word boundaries ('\b') to bracket the specific hash lengths
 MD5_RE = r"\b([a-fA-F\d]{32})\b"
 SHA1_RE = r"\b([a-fA-F\d]{40})\b"
 SHA256_RE = r"\b([a-fA-F\d]{64})\b"
