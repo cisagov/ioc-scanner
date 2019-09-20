@@ -6,9 +6,9 @@
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/cisagov/ioc-scanner.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/cisagov/ioc-scanner/context:python)
 
 The ioc-scanner can search a filesystem for indicators of compromise (IoC).
-Indicators are defined by their `md5` hashes.  The tool is very flexible
-about how it receives the IoC hashes.  It will search blobs of input for
-strings that look like `md5` hashes.
+Indicators are defined by their `md5`, `sha-1`, or `sha-256` hashes.  The tool
+is very flexible about how it receives the IoC hashes.  It will search blobs of
+input for strings that look like `md5`, `sha-1`, and `sha-256` hashes.
 
 ## Command line usage ##
 
@@ -48,6 +48,8 @@ fff485a90ef0a86fb2813eb64fd3442c    0
 0313fd399b143fc40cd52a1679018305    1
 ac56f4b8fac5739ccdb45777d313becf    0
 69630e4574ec6798239b091cda43dca0    0
+50973a3fc57d70c7911f7a952356188b9939e56b    0
+b509f8545501588ecd828f970d91afc7c4aa6e238e838bd6a08ee2cd920fbe98    0
 ```
 
 ## Stand-alone usage ##
