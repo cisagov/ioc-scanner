@@ -10,6 +10,7 @@ import pytest
 
 import ioc_scan
 from ioc_scan import ioc_scan_cli
+from ioc_scan import ioc_scanner
 
 
 log_levels = (
@@ -48,6 +49,16 @@ def test_log_levels(level):
                 logging.root.hasHandlers() is True
             ), "root logger should now have a handler"
             assert return_code == 0, "main() should return success (0)"
+
+
+def test_hash_file():
+    """Test that hashes are being generated correctly."""
+    hashes = ioc_scanner.hash_file("tests/targets/eicar.txt")
+    assert hashes[0] == "69630e4574ec6798239b091cda43dca0"
+    assert hashes[1] == "cf8bd9dfddff007f75adf4c2be48005cea317c62"
+    assert (
+        hashes[2] == "131f95c51cc819465fa1797f6ccacf9d494aaaff46fa3eac73ae63ffbdfd8267"
+    )
 
 
 def test_scan_file(capsys):
