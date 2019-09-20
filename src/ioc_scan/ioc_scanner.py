@@ -11,11 +11,10 @@ This script should be run as a priveledged user.
 
 from collections import defaultdict
 from datetime import datetime
+import hashlib
 import logging
-import platform
+import os
 import re
-import subprocess  # nosec
-from string import Template
 import sys
 
 # just paste the text that has the indicators into BLOB.
@@ -35,6 +34,11 @@ MDS: e803916dd56996d7dald4013d71d05dd
 MDS: 2a2410cef5497cbd3f6c13eaff9619da
 MDS: 3e7eb6abcce304de0822a618de756fd2
 MDS: 350cba65e28c723cbf0724c19bd7ee69
+SHA256: b509f8545501588ecd828f970d91afc7c4aa6e238e838bd6a08ee2cd920fbe98
+SHA-1:  31B54AEBDAF5FBC73A66AC41CCB35943CC9B7F72
+SHA-1:  50973A3FC57D70C7911F7A952356188B9939E56B
+SHA-1:  244EB62B9AC30934098CA4204447440D6FC4E259
+SHA-1:  5C8F83CC4FF57E7C67925DF4D9DAABE5D0CC07E2
 few things that should hit:
 GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin18)
 0313fd399b143fc40cd52a1679018305
@@ -44,11 +48,30 @@ EICAR test file
 69630e4574ec6798239b091cda43dca0
 """
 
-MD5_RE = r"([a-fA-F\d]{32})"
-COMMANDS = {
-    "Linux": Template(r"find $root -xdev -type f -exec md5sum {} \;"),
-    "Darwin": Template(r"find $root -xdev -type f -exec md5 -r {} \;"),
-}
+# use word boundaries ('\b') to bracket the specific hash lengths
+MD5_RE = r"\b([a-fA-F\d]{32})\b"
+SHA1_RE = r"\b([a-fA-F\d]{40})\b"
+SHA256_RE = r"\b([a-fA-F\d]{64})\b"
+
+
+def hash_file(file):
+    """Generate MD5, SHA1, and SHA256 hashes for a given file."""
+    hash_md5 = hashlib.md5()  # nosec
+    hash_sha1 = hashlib.sha1()  # nosec
+    hash_sha256 = hashlib.sha256()
+
+    # try except to eat filesystem errors like Permission Denied etc
+    try:
+        with open(file, "rb") as f:
+            # read it in chunks so memory use isn't outlandish
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+                hash_sha1.update(chunk)
+                hash_sha256.update(chunk)
+    except OSError:
+        pass
+
+    return (hash_md5.hexdigest(), hash_sha1.hexdigest(), hash_sha256.hexdigest())
 
 
 def main(blob=None, root="/"):
@@ -60,39 +83,48 @@ def main(blob=None, root="/"):
         blob = BLOB
 
     # get a list of all the md5 hashes from some inconsiderate source.
-    indicators = re.findall(MD5_RE, blob.lower())
+    indicators_md5 = re.findall(MD5_RE, blob.lower())
+    indicators_sha1 = re.findall(SHA1_RE, blob.lower())
+    indicators_sha256 = re.findall(SHA256_RE, blob.lower())
+    indicators = indicators_md5 + indicators_sha1 + indicators_sha256
+
     logging.debug(f"Scan will search for {len(indicators)} indicators")
 
     # compile a regular expression to search for all indicators
     indicators_re = re.compile("|".join(indicators))
 
-    # choose the correct command based on the platform, and apply root to template
-    command = COMMANDS.get(platform.system()).substitute(root=root)
-    logging.debug(f"Scan command: {command}")
-
     # start hashing files
     logging.debug(f"Starting scan with root: {root}")
-    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)  # nosec
-    logging.debug("Scan completed")
 
+    # store an array of ioc hits
+    ioc_list = []
     # keep a tally of the hits
     tallies = defaultdict(lambda: 0)
+    # walk the filesystem starting at root
+    for rootdir, subdirs, files in os.walk(root):
+        # find -xdev equivalent
+        subdirs[:] = [
+            d for d in subdirs if not os.path.ismount(os.path.join(rootdir, d))
+        ]
 
-    for line in p.stdout:
-        line = line.decode("utf-8")
-        # a line looks like this:
-        # 0313fd399b143fc40cd52a1679018305  /bin/bash
+        # check each file in the current directory
+        for file in [os.path.join(rootdir, f) for f in files]:
+            # get hashes for the current file
+            hashes = hash_file(file)
 
-        # save just the hash
-        file_hash = line.split()[0]
+            for hash in hashes:
+                matches = indicators_re.findall(hash)
 
-        # check the line for matches
-        matches = indicators_re.findall(file_hash)
+                # tally it up and report if we get a hit
+                if matches:
+                    ioc_list.append(f"{hash} {file}")
+                    tallies[hash] += 1
 
-        # tally it up and report if we get a hit
-        if matches:
-            print(line)
-            tallies[matches[0]] += 1
+    logging.debug("Scan completed")
+
+    # print all indicators that were found
+    for ioc in ioc_list:
+        print(ioc)
 
     # stop the clock
     end_time = datetime.utcnow()
