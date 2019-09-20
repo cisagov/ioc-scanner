@@ -65,6 +65,7 @@ def hash_file(file):
                 hash_sha256.update(chunk)
     except OSError:
         pass
+
     return (hash_md5.hexdigest(), hash_sha1.hexdigest(), hash_sha256.hexdigest())
 
 

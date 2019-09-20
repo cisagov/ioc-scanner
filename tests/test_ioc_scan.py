@@ -51,13 +51,24 @@ def test_log_levels(level):
             assert return_code == 0, "main() should return success (0)"
 
 
-def test_hash_file():
+def test_hash_file_hashing():
     """Test that hashes are being generated correctly."""
     hashes = ioc_scanner.hash_file("tests/targets/eicar.txt")
     assert hashes[0] == "69630e4574ec6798239b091cda43dca0"
     assert hashes[1] == "cf8bd9dfddff007f75adf4c2be48005cea317c62"
     assert (
         hashes[2] == "131f95c51cc819465fa1797f6ccacf9d494aaaff46fa3eac73ae63ffbdfd8267"
+    )
+
+
+def test_hash_file_except():
+    """Test that hash_file() passes when an OSError exception is raised."""
+    hashes = ioc_scanner.hash_file("tests/targets/doesnotexist.txt")
+    # values for hashes of nothing
+    assert hashes[0] == "d41d8cd98f00b204e9800998ecf8427e"
+    assert hashes[1] == "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    assert (
+        hashes[2] == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     )
 
 
