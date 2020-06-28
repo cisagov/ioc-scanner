@@ -75,7 +75,13 @@ HASH_REGEXES = [
 
 def hash_file(file):
     """Generate supported hashes for a given file."""
-    hashers = [hasher() for hasher in AVAILABLE_HASHERS]
+    hashers = list()
+    for hasher in AVAILABLE_HASHERS:
+        try:
+            hashers.append(hasher(usedforsecurity=False))
+        # Not all implementations support the "usedforsecurity" keyword argument.
+        except TypeError:
+            hashers.append(hasher())
 
     # try except to eat filesystem errors like Permission Denied etc
     try:
