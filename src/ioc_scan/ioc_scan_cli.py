@@ -22,13 +22,15 @@ Options:
   -t --target=root       Scan target root directory. [default: /]
 """
 
+# Standard Python Libraries
 import logging
 import sys
 
+# Third-Party Libraries
 import docopt
 
-from ._version import __version__
 from . import ioc_scanner
+from ._version import __version__
 
 
 def main():

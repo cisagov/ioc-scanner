@@ -1,17 +1,18 @@
 #!/usr/bin/env pytest -vs
 """Tests for ioc_scan."""
 
+# Standard Python Libraries
 from io import StringIO
-from unittest.mock import patch
 import logging
 import sys
+from unittest.mock import patch
 
+# Third-Party Libraries
 import pytest
 
+# cisagov Libraries
 import ioc_scan
-from ioc_scan import ioc_scan_cli
-from ioc_scan import ioc_scanner
-
+from ioc_scan import ioc_scan_cli, ioc_scanner
 
 log_levels = (
     "debug",
