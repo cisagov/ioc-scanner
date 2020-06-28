@@ -49,30 +49,45 @@ EICAR test file
 69630e4574ec6798239b091cda43dca0
 """
 
+
+def setup_hashers():
+    """Get hashsers available in hashlib from our list of desired algorithms."""
+    available_hashers = [
+        algo for algo in DESIRED_HASHERS if algo in hashlib.algorithms_available
+    ]
+    return tuple(getattr(hashlib, algo) for algo in available_hashers)
+
+
+# List of hash algorithms we want to use on files. These shoudl correspond to
+# constructors in the hashlib library.
+DESIRED_HASHERS = ["md5", "sha1", "sha256"]
+
+# Hashing functions that have been verified to be available in hashlib.
+AVAILABLE_HASHERS = setup_hashers()
+
 # use word boundaries ('\b') to bracket the specific hash lengths
-MD5_RE = r"\b([a-fA-F\d]{32})\b"
-SHA1_RE = r"\b([a-fA-F\d]{40})\b"
-SHA256_RE = r"\b([a-fA-F\d]{64})\b"
+HASH_REGEXES = [
+    r"\b([a-fA-F\d]{32})\b",  # MD5
+    r"\b([a-fA-F\d]{40})\b",  # SHA-1
+    r"\b([a-fA-F\d]{64})\b",  # SHA-256
+]
 
 
 def hash_file(file):
-    """Generate MD5, SHA1, and SHA256 hashes for a given file."""
-    hash_md5 = hashlib.md5()  # nosec
-    hash_sha1 = hashlib.sha1()  # nosec
-    hash_sha256 = hashlib.sha256()
+    """Generate supported hashes for a given file."""
+    hashers = [hasher() for hasher in AVAILABLE_HASHERS]
 
     # try except to eat filesystem errors like Permission Denied etc
     try:
         with open(file, "rb") as f:
             # read it in chunks so memory use isn't outlandish
             for chunk in iter(lambda: f.read(4096), b""):
-                hash_md5.update(chunk)
-                hash_sha1.update(chunk)
-                hash_sha256.update(chunk)
+                for hasher in hashers:
+                    hasher.update(chunk)
     except OSError:
         pass
 
-    return (hash_md5.hexdigest(), hash_sha1.hexdigest(), hash_sha256.hexdigest())
+    return tuple(hasher.hexdigest() for hasher in hashers)
 
 
 def main(blob=None, root="/"):
@@ -83,11 +98,9 @@ def main(blob=None, root="/"):
     if blob is None:
         blob = BLOB
 
-    # get a list of all the md5 hashes from some inconsiderate source.
-    indicators_md5 = re.findall(MD5_RE, blob.lower())
-    indicators_sha1 = re.findall(SHA1_RE, blob.lower())
-    indicators_sha256 = re.findall(SHA256_RE, blob.lower())
-    indicators = indicators_md5 + indicators_sha1 + indicators_sha256
+    # Get a list of all the hashes from some inconsiderate source.
+    # We have to flatten the lists returned by re.findall() in the process.
+    indicators = [match for regex in HASH_REGEXES for match in re.findall(regex, blob)]
 
     logging.debug(f"Scan will search for {len(indicators)} indicators")
 
