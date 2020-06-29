@@ -108,13 +108,13 @@ def main(blob=None, root="/"):
     # We have to flatten the lists returned by re.findall() in the process.
     indicators = [match for regex in HASH_REGEXES for match in re.findall(regex, blob)]
 
-    logging.debug(f"Scan will search for {len(indicators)} indicators")
+    logging.debug("Scan will search for %d indicators", len(indicators))
 
     # compile a regular expression to search for all indicators
     indicators_re = re.compile("|".join(indicators))
 
     # start hashing files
-    logging.debug(f"Starting scan with root: {root}")
+    logging.debug("Starting scan with root: %s", root)
 
     # store an array of ioc hits
     ioc_list = []
@@ -132,12 +132,12 @@ def main(blob=None, root="/"):
             # get hashes for the current file
             hashes = hash_file(file)
 
-            for hash in hashes:
-                matches = indicators_re.findall(hash)
+            for item in hashes:
+                matches = indicators_re.findall(item)
 
                 # tally it up and report if we get a hit
                 if matches:
-                    ioc_list.append(f"{hash} {file}")
+                    ioc_list.append(f"{item} {file}")
                     tallies[hash] += 1
 
     logging.debug("Scan completed")
