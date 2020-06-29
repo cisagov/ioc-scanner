@@ -51,7 +51,7 @@ EICAR test file
 
 
 def setup_hashers():
-    """Get hashsers available in hashlib from our list of desired algorithms."""
+    """Get hashers available in hashlib from our list of desired algorithms."""
     available_hashers = [
         algo for algo in DESIRED_HASHERS if algo in hashlib.algorithms_available
     ]
