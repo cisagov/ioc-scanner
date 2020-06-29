@@ -6,7 +6,7 @@ and scan a machine looking for files that match.  It will report the
 location of each mataching file as well as a summary containing the
 tallies by hash.  Execution time is also reported.
 
-This script should be run as a priveledged user.
+This script should be run as a privileged user.
 """
 
 # Standard Python Libraries
