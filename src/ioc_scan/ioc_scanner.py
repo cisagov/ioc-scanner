@@ -58,7 +58,7 @@ def setup_hashers():
     return tuple(getattr(hashlib, algo) for algo in available_hashers)
 
 
-# List of hash algorithms we want to use on files. These shoudl correspond to
+# List of hash algorithms we want to use on files. These should correspond to
 # constructors in the hashlib library.
 DESIRED_HASHERS = ["md5", "sha1", "sha256"]
 
