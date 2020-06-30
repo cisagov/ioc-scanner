@@ -85,7 +85,8 @@ setup(
             "pytest-cov",
             "pytest",
         ]
-    },  # Conveniently allows one to run the CLI tool as `ioc-scan`
+    },
+    # Conveniently allows one to run the CLI tool as `ioc-scan`
     entry_points={
         "console_scripts": [
             "ioc-scan = ioc_scan.ioc_scan_cli:main",
