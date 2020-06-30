@@ -1,17 +1,18 @@
 #!/usr/bin/env pytest -vs
 """Tests for ioc_scan."""
 
+# Standard Python Libraries
 from io import StringIO
-from unittest.mock import patch
 import logging
 import sys
+from unittest.mock import patch
 
+# Third-Party Libraries
 import pytest
 
+# cisagov Libraries
 import ioc_scan
-from ioc_scan import ioc_scan_cli
-from ioc_scan import ioc_scanner
-
+from ioc_scan import ioc_scan_cli, ioc_scanner
 
 log_levels = (
     "debug",
@@ -97,10 +98,11 @@ def test_scan_file(capsys):
 
 def test_scan_stdin(capsys):
     """Test running the scanner with an input target file."""
+    test_hash = "69630e4574ec6798239b091cda43dca0"
     with patch.object(
         sys, "argv", ["bogus", "--log-level=debug", "--stdin", "--target=tests/targets"]
     ):
-        with patch("sys.stdin", StringIO("69630e4574ec6798239b091cda43dca0")):
+        with patch("sys.stdin", StringIO(test_hash)):
             ioc_scan_cli.main()
     captured = capsys.readouterr()
     print(captured.out)
@@ -108,5 +110,8 @@ def test_scan_stdin(capsys):
         captured.out.count("eicar.txt") == 1
     ), "standard out should contain eicar detection with filename"
     assert (
-        captured.out.count("69630e4574ec6798239b091cda43dca0") == 2
+        captured.out.count(test_hash) == 2
     ), "standard out should detection and tally should match hash"
+    assert (
+        captured.out.count(f"{test_hash}    1") == 1
+    ), "standard out should show one detected match for test file"

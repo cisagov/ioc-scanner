@@ -6,9 +6,10 @@ and scan a machine looking for files that match.  It will report the
 location of each mataching file as well as a summary containing the
 tallies by hash.  Execution time is also reported.
 
-This script should be run as a priveledged user.
+This script should be run as a privileged user.
 """
 
+# Standard Python Libraries
 from collections import defaultdict
 from datetime import datetime
 import hashlib
@@ -48,30 +49,51 @@ EICAR test file
 69630e4574ec6798239b091cda43dca0
 """
 
+
+def setup_hashers():
+    """Get hashers available in hashlib from our list of desired algorithms."""
+    available_hashers = [
+        algo for algo in DESIRED_HASHERS if algo in hashlib.algorithms_available
+    ]
+    return tuple(getattr(hashlib, algo) for algo in available_hashers)
+
+
+# List of hash algorithms we want to use on files. These should correspond to
+# constructors in the hashlib library.
+DESIRED_HASHERS = ["md5", "sha1", "sha256"]
+
+# Hashing functions that have been verified to be available in hashlib.
+AVAILABLE_HASHERS = setup_hashers()
+
 # use word boundaries ('\b') to bracket the specific hash lengths
-MD5_RE = r"\b([a-fA-F\d]{32})\b"
-SHA1_RE = r"\b([a-fA-F\d]{40})\b"
-SHA256_RE = r"\b([a-fA-F\d]{64})\b"
+HASH_REGEXES = [
+    r"\b([a-fA-F\d]{32})\b",  # MD5
+    r"\b([a-fA-F\d]{40})\b",  # SHA-1
+    r"\b([a-fA-F\d]{64})\b",  # SHA-256
+]
 
 
 def hash_file(file):
-    """Generate MD5, SHA1, and SHA256 hashes for a given file."""
-    hash_md5 = hashlib.md5()  # nosec
-    hash_sha1 = hashlib.sha1()  # nosec
-    hash_sha256 = hashlib.sha256()
+    """Generate supported hashes for a given file."""
+    hashers = list()
+    for hasher in AVAILABLE_HASHERS:
+        try:
+            hashers.append(hasher(usedforsecurity=False))
+        # Not all implementations support the "usedforsecurity" keyword argument.
+        except TypeError:
+            hashers.append(hasher())
 
     # try except to eat filesystem errors like Permission Denied etc
     try:
         with open(file, "rb") as f:
             # read it in chunks so memory use isn't outlandish
             for chunk in iter(lambda: f.read(4096), b""):
-                hash_md5.update(chunk)
-                hash_sha1.update(chunk)
-                hash_sha256.update(chunk)
+                for hasher in hashers:
+                    hasher.update(chunk)
     except OSError:
         pass
 
-    return (hash_md5.hexdigest(), hash_sha1.hexdigest(), hash_sha256.hexdigest())
+    return tuple(hasher.hexdigest() for hasher in hashers)
 
 
 def main(blob=None, root="/"):
@@ -82,19 +104,17 @@ def main(blob=None, root="/"):
     if blob is None:
         blob = BLOB
 
-    # get a list of all the md5 hashes from some inconsiderate source.
-    indicators_md5 = re.findall(MD5_RE, blob.lower())
-    indicators_sha1 = re.findall(SHA1_RE, blob.lower())
-    indicators_sha256 = re.findall(SHA256_RE, blob.lower())
-    indicators = indicators_md5 + indicators_sha1 + indicators_sha256
+    # Get a list of all the hashes from some inconsiderate source.
+    # We have to flatten the lists returned by re.findall() in the process.
+    indicators = [match for regex in HASH_REGEXES for match in re.findall(regex, blob)]
 
-    logging.debug(f"Scan will search for {len(indicators)} indicators")
+    logging.debug("Scan will search for %d indicators", len(indicators))
 
     # compile a regular expression to search for all indicators
     indicators_re = re.compile("|".join(indicators))
 
     # start hashing files
-    logging.debug(f"Starting scan with root: {root}")
+    logging.debug("Starting scan with root: %s", root)
 
     # store an array of ioc hits
     ioc_list = []
@@ -112,13 +132,13 @@ def main(blob=None, root="/"):
             # get hashes for the current file
             hashes = hash_file(file)
 
-            for hash in hashes:
-                matches = indicators_re.findall(hash)
+            for item in hashes:
+                matches = indicators_re.findall(item)
 
                 # tally it up and report if we get a hit
                 if matches:
-                    ioc_list.append(f"{hash} {file}")
-                    tallies[hash] += 1
+                    ioc_list.append(f"{item} {file}")
+                    tallies[item] += 1
 
     logging.debug("Scan completed")
 

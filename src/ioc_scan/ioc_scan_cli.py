@@ -22,13 +22,15 @@ Options:
   -t --target=root       Scan target root directory. [default: /]
 """
 
+# Standard Python Libraries
 import logging
 import sys
 
+# Third-Party Libraries
 import docopt
 
-from ._version import __version__
 from . import ioc_scanner
+from ._version import __version__
 
 
 def main():
@@ -42,8 +44,9 @@ def main():
         )
     except ValueError:
         logging.critical(
-            f'"{log_level}" is not a valid logging level.  Possible values '
-            "are debug, info, warning, and error."
+            '"%s" is not a valid logging level.  Possible values '
+            "are debug, info, warning, and error.",
+            log_level,
         )
         return 1
 
@@ -53,7 +56,7 @@ def main():
         logging.debug("Reading hashes from stdin")
         hashblob = sys.stdin.read()
     elif args["--file"] is not None:
-        logging.debug(f"Reading hashes from {args['--file']}")
+        logging.debug("Reading hashes from %s", args["--file"])
         with open(args["--file"]) as f:
             hashblob = f.read()
 
