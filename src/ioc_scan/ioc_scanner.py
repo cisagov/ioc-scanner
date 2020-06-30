@@ -138,7 +138,7 @@ def main(blob=None, root="/"):
                 # tally it up and report if we get a hit
                 if matches:
                     ioc_list.append(f"{item} {file}")
-                    tallies[hash] += 1
+                    tallies[item] += 1
 
     logging.debug("Scan completed")
 
