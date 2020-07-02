@@ -14,11 +14,11 @@ Usage:
 
 Options:
   -h --help              Show this message.
-  -f --file=hashfile     Search for hashes in specified file.
+  -f --file=hashfile     Get IOC hashes from specified file.
   -L --log-level=LEVEL   If specified, then the log level will be set to
                          the specified value.  Valid values are "debug", "info",
                          "warning", "error", and "critical". [default: warning]
-  -s --stdin             Search for hashes on stdin.
+  -s --stdin             Get IOC hashes from stdin.
   -t --target=root       Scan target root directory. [default: /]
 """
 

@@ -163,7 +163,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Indicators of compromise (IoC) scanning tool."
     )
-    parser.add_argument("-f", "--file", dest="hashfile")
+    parser.add_argument(
+        "-f", "--file", dest="hashfile", help="Get IOC hashes from specified file."
+    )
     args = parser.parse_args()
 
     if args.hashes_file:
