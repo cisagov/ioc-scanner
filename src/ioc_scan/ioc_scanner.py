@@ -158,4 +158,18 @@ def main(blob=None, root="/"):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Indicators of compromise (IoC) scanning tool."
+    )
+    parser.add_argument("-f", "--file", dest="hashfile")
+    args = parser.parse_args()
+
+    if args.hashes_file:
+        logging.debug("Reading hashes from %s", args.hashfile)
+        with open(args.hashfile) as f:
+            hashblob = f.read()
+        sys.exit(main(hashblob))
+    else:
+        sys.exit(main())
