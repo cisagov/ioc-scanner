@@ -75,6 +75,8 @@ def test_hash_file_except():
 
 def test_scan_file(capsys):
     """Test running the scanner with an input target file."""
+    test_hash = "69630e4574ec6798239b091cda43dca0"
+
     with patch.object(
         sys,
         "argv",
@@ -92,8 +94,11 @@ def test_scan_file(capsys):
         captured.out.count("eicar.txt") == 1
     ), "standard out should contain eicar detection with filename"
     assert (
-        captured.out.count("69630e4574ec6798239b091cda43dca0") == 2
-    ), "standard out should detection and tally should match hash"
+        captured.out.count(test_hash) == 2
+    ), "standard out detection and tally should match hash"
+    assert (
+        captured.out.count(f"{test_hash}    1") == 1
+    ), "standard out should show one detected match for the test file"
 
 
 def test_scan_stdin(capsys):
@@ -111,10 +116,10 @@ def test_scan_stdin(capsys):
     ), "standard out should contain eicar detection with filename"
     assert (
         captured.out.count(test_hash) == 2
-    ), "standard out should detection and tally should match hash"
+    ), "standard out detection and tally should match hash"
     assert (
         captured.out.count(f"{test_hash}    1") == 1
-    ), "standard out should show one detected match for test file"
+    ), "standard out should show one detected match for the test file"
 
 
 @pytest.fixture
@@ -127,6 +132,8 @@ def test_fs(fs):
 
 def test_ioc_scanner_standalone_no_file(capsys, test_fs):
     """Test running the scanner in standalone mode."""
+    test_hash = "69630e4574ec6798239b091cda43dca0"
+
     with patch.object(
         sys, "argv", ["bogus"],
     ):
@@ -137,12 +144,17 @@ def test_ioc_scanner_standalone_no_file(capsys, test_fs):
         captured.out.count("eicar.txt") == 1
     ), "standard out should contain eicar detection with filename"
     assert (
-        captured.out.count("69630e4574ec6798239b091cda43dca0") == 2
-    ), "standard out should detection and tally should match hash"
+        captured.out.count(test_hash) == 2
+    ), "standard out detection and tally should match hash"
+    assert (
+        captured.out.count(f"{test_hash}    1") == 1
+    ), "standard out should show one detected match for the test file"
 
 
 def test_ioc_scanner_standalone_file(capsys, test_fs):
     """Test running the scanner in standalone mode with an input target file."""
+    test_hash = "69630e4574ec6798239b091cda43dca0"
+
     with patch.object(
         sys, "argv", ["bogus", "--file=tests/testblob.txt"],
     ):
@@ -153,5 +165,8 @@ def test_ioc_scanner_standalone_file(capsys, test_fs):
         captured.out.count("eicar.txt") == 1
     ), "standard out should contain eicar detection with filename"
     assert (
-        captured.out.count("69630e4574ec6798239b091cda43dca0") == 2
-    ), "standard out should detection and tally should match hash"
+        captured.out.count(test_hash) == 2
+    ), "standard out detection and tally should match hash"
+    assert (
+        captured.out.count(f"{test_hash}    1") == 1
+    ), "standard out should show one detected match for the test file"
