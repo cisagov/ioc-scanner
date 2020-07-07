@@ -168,7 +168,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    if args.hashes_file:
+    if args.hashfile:
         logging.debug("Reading hashes from %s", args.hashfile)
         with open(args.hashfile) as f:
             hashblob = f.read()
