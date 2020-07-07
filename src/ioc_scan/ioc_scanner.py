@@ -96,8 +96,8 @@ def hash_file(file):
     return tuple(hasher.hexdigest() for hasher in hashers)
 
 
-def main(blob=None, root="/"):
-    """Start scanning, main entry point."""
+def ioc_search(blob=None, root="/"):
+    """Start scanning, typical entry point."""
     # start the clock
     start_time = datetime.utcnow()
 
@@ -157,7 +157,8 @@ def main(blob=None, root="/"):
     return 0
 
 
-if __name__ == "__main__":
+def main():
+    """Provide limited commandline functionality for standalone mode."""
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -167,11 +168,16 @@ if __name__ == "__main__":
         "-f", "--file", dest="hashfile", help="Get IOC hashes from specified file."
     )
     args = parser.parse_args()
-
     if args.hashfile:
         logging.debug("Reading hashes from %s", args.hashfile)
         with open(args.hashfile) as f:
             hashblob = f.read()
-        sys.exit(main(hashblob))
+        exit_code = ioc_search(hashblob)
     else:
-        sys.exit(main())
+        exit_code = ioc_search()
+
+    return exit_code
+
+
+if __name__ == "__main__":
+    sys.exit(main())

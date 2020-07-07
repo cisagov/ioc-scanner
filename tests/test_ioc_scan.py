@@ -97,7 +97,7 @@ def test_scan_file(capsys):
 
 
 def test_scan_stdin(capsys):
-    """Test running the scanner with an input target file."""
+    """Test running the scanner with stdin as input."""
     test_hash = "69630e4574ec6798239b091cda43dca0"
     with patch.object(
         sys, "argv", ["bogus", "--log-level=debug", "--stdin", "--target=tests/targets"]
@@ -115,3 +115,43 @@ def test_scan_stdin(capsys):
     assert (
         captured.out.count(f"{test_hash}    1") == 1
     ), "standard out should show one detected match for test file"
+
+
+@pytest.fixture
+def test_fs(fs):
+    """Set up the fake filesystem for testing standalone mode."""
+    fs.add_real_directory("tests/targets")
+    fs.add_real_file("tests/testblob.txt")
+    yield fs
+
+
+def test_ioc_scanner_standalone_no_file(capsys, test_fs):
+    """Test running the scanner in standalone mode."""
+    with patch.object(
+        sys, "argv", ["bogus"],
+    ):
+        ioc_scanner.main()
+    captured = capsys.readouterr()
+    print(captured.out)
+    assert (
+        captured.out.count("eicar.txt") == 1
+    ), "standard out should contain eicar detection with filename"
+    assert (
+        captured.out.count("69630e4574ec6798239b091cda43dca0") == 2
+    ), "standard out should detection and tally should match hash"
+
+
+def test_ioc_scanner_standalone_file(capsys, test_fs):
+    """Test running the scanner in standalone mode with an input target file."""
+    with patch.object(
+        sys, "argv", ["bogus", "--file=tests/testblob.txt"],
+    ):
+        ioc_scanner.main()
+    captured = capsys.readouterr()
+    print(captured.out)
+    assert (
+        captured.out.count("eicar.txt") == 1
+    ), "standard out should contain eicar detection with filename"
+    assert (
+        captured.out.count("69630e4574ec6798239b091cda43dca0") == 2
+    ), "standard out should detection and tally should match hash"

@@ -60,7 +60,7 @@ def main():
         with open(args["--file"]) as f:
             hashblob = f.read()
 
-    exit_code = ioc_scanner.main(hashblob, args["--target"])
+    exit_code = ioc_scanner.ioc_search(hashblob, args["--target"])
 
     # Stop logging and clean up
     logging.shutdown()
