@@ -130,14 +130,24 @@ def test_fs(fs):
     yield fs
 
 
-def test_ioc_scanner_standalone_no_file(capsys, test_fs):
+def test_ioc_scanner_standalone_no_file(caplog, capsys, test_fs):
     """Test running the scanner in standalone mode."""
     test_hash = "69630e4574ec6798239b091cda43dca0"
 
-    with patch.object(
-        sys, "argv", ["bogus"],
-    ):
-        ioc_scanner.main()
+    with caplog.at_level(logging.DEBUG):
+        with patch.object(
+            sys, "argv", ["bogus"],
+        ):
+            ioc_scanner.main()
+
+    print(caplog.text)
+    assert (
+        "Searching with default configuration." in caplog.text
+    ), "logging output should show using the default configuration"
+    assert (
+        "Reading hashes from" not in caplog.text
+    ), "logging output should show using the default configuration"
+
     captured = capsys.readouterr()
     print(captured.out)
     assert (
@@ -151,14 +161,26 @@ def test_ioc_scanner_standalone_no_file(capsys, test_fs):
     ), "standard out should show one detected match for the test file"
 
 
-def test_ioc_scanner_standalone_file(capsys, test_fs):
+def test_ioc_scanner_standalone_file(caplog, capsys, test_fs):
     """Test running the scanner in standalone mode with an input target file."""
     test_hash = "69630e4574ec6798239b091cda43dca0"
+    hashfile = "tests/testblob.txt"
 
-    with patch.object(
-        sys, "argv", ["bogus", "--file=tests/testblob.txt"],
-    ):
-        ioc_scanner.main()
+    with caplog.at_level(logging.DEBUG):
+        with patch.object(
+            sys, "argv", ["bogus", f"--file={hashfile}"],
+        ):
+            ioc_scanner.main()
+
+    print(caplog.text)
+    assert (
+        "Searching with default configuration." not in caplog.text
+    ), "logging output should show reading IOC hashes from a file"
+
+    assert (
+        f"Reading hashes from '{hashfile}'." in caplog.text
+    ), "logging output should show reading IOC hashes from a file"
+
     captured = capsys.readouterr()
     print(captured.out)
     assert (

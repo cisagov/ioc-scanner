@@ -169,11 +169,12 @@ def main():
     )
     args = parser.parse_args()
     if args.hashfile:
-        logging.debug("Reading hashes from %s", args.hashfile)
+        logging.debug("Reading hashes from '%s'.", args.hashfile)
         with open(args.hashfile) as f:
             hashblob = f.read()
         exit_code = ioc_search(hashblob)
     else:
+        logging.debug("Searching with default configuration.")
         exit_code = ioc_search()
 
     return exit_code
