@@ -23,6 +23,10 @@ log_levels = (
     pytest.param("critical2", marks=pytest.mark.xfail),
 )
 
+TEST_HASHFILE = "tests/testblob.txt"
+EICAR_MD5 = "69630e4574ec6798239b091cda43dca0"
+LOREM_SHA256 = "56293a80e0394d252e995f2debccea8223e4b5b2b150bee212729b3b39ac4d46"
+
 
 def test_version(capsys):
     """Verify that version string sent to stdout, and agrees with the module."""
@@ -75,15 +79,13 @@ def test_hash_file_except():
 
 def test_scan_file(capsys):
     """Test running the scanner with an input target file."""
-    test_hash = "69630e4574ec6798239b091cda43dca0"
-
     with patch.object(
         sys,
         "argv",
         [
             "bogus",
             "--log-level=debug",
-            "--file=tests/testblob.txt",
+            f"--file={TEST_HASHFILE}",
             "--target=tests/targets",
         ],
     ):
@@ -94,31 +96,30 @@ def test_scan_file(capsys):
         captured.out.count("eicar.txt") == 1
     ), "standard out should contain eicar detection with filename"
     assert (
-        captured.out.count(test_hash) == 2
+        captured.out.count(EICAR_MD5) == 2
     ), "standard out detection and tally should match hash"
     assert (
-        captured.out.count(f"{test_hash}    1") == 1
+        captured.out.count(f"{EICAR_MD5}    1") == 1
     ), "standard out should show one detected match for the test file"
 
 
 def test_scan_stdin(capsys):
     """Test running the scanner with stdin as input."""
-    test_hash = "69630e4574ec6798239b091cda43dca0"
     with patch.object(
         sys, "argv", ["bogus", "--log-level=debug", "--stdin", "--target=tests/targets"]
     ):
-        with patch("sys.stdin", StringIO(test_hash)):
+        with patch("sys.stdin", StringIO(LOREM_SHA256)):
             ioc_scan_cli.main()
     captured = capsys.readouterr()
     print(captured.out)
     assert (
-        captured.out.count("eicar.txt") == 1
+        captured.out.count("lorem.txt") == 1
     ), "standard out should contain eicar detection with filename"
     assert (
-        captured.out.count(test_hash) == 2
+        captured.out.count(LOREM_SHA256) == 2
     ), "standard out detection and tally should match hash"
     assert (
-        captured.out.count(f"{test_hash}    1") == 1
+        captured.out.count(f"{LOREM_SHA256}    1") == 1
     ), "standard out should show one detected match for the test file"
 
 
@@ -132,8 +133,6 @@ def test_fs(fs):
 
 def test_ioc_scanner_standalone_no_file(caplog, capsys, test_fs):
     """Test running the scanner in standalone mode."""
-    test_hash = "69630e4574ec6798239b091cda43dca0"
-
     with caplog.at_level(logging.DEBUG):
         with patch.object(
             sys, "argv", ["bogus"],
@@ -154,21 +153,18 @@ def test_ioc_scanner_standalone_no_file(caplog, capsys, test_fs):
         captured.out.count("eicar.txt") == 1
     ), "standard out should contain eicar detection with filename"
     assert (
-        captured.out.count(test_hash) == 2
+        captured.out.count(EICAR_MD5) == 2
     ), "standard out detection and tally should match hash"
     assert (
-        captured.out.count(f"{test_hash}    1") == 1
+        captured.out.count(f"{EICAR_MD5}    1") == 1
     ), "standard out should show one detected match for the test file"
 
 
 def test_ioc_scanner_standalone_file(caplog, capsys, test_fs):
     """Test running the scanner in standalone mode with an input target file."""
-    test_hash = "69630e4574ec6798239b091cda43dca0"
-    hashfile = "tests/testblob.txt"
-
     with caplog.at_level(logging.DEBUG):
         with patch.object(
-            sys, "argv", ["bogus", f"--file={hashfile}"],
+            sys, "argv", ["bogus", f"--file={TEST_HASHFILE}"],
         ):
             ioc_scanner.main()
 
@@ -178,17 +174,17 @@ def test_ioc_scanner_standalone_file(caplog, capsys, test_fs):
     ), "logging output should show reading IOC hashes from a file"
 
     assert (
-        f"Reading hashes from '{hashfile}'." in caplog.text
+        f"Reading hashes from '{TEST_HASHFILE}'." in caplog.text
     ), "logging output should show reading IOC hashes from a file"
 
     captured = capsys.readouterr()
     print(captured.out)
     assert (
-        captured.out.count("eicar.txt") == 1
+        captured.out.count("lorem.txt") == 1
     ), "standard out should contain eicar detection with filename"
     assert (
-        captured.out.count(test_hash) == 2
+        captured.out.count(LOREM_SHA256) == 2
     ), "standard out detection and tally should match hash"
     assert (
-        captured.out.count(f"{test_hash}    1") == 1
+        captured.out.count(f"{LOREM_SHA256}    1") == 1
     ), "standard out should show one detected match for the test file"
