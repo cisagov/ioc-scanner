@@ -28,6 +28,14 @@ EICAR_MD5 = "69630e4574ec6798239b091cda43dca0"
 LOREM_SHA256 = "56293a80e0394d252e995f2debccea8223e4b5b2b150bee212729b3b39ac4d46"
 
 
+@pytest.fixture
+def test_fs(fs):
+    """Set up the fake filesystem for testing with no target."""
+    fs.add_real_directory("tests/targets")
+    fs.add_real_file("tests/testblob.txt")
+    yield fs
+
+
 def test_version(capsys):
     """Verify that version string sent to stdout, and agrees with the module."""
     with pytest.raises(SystemExit):
@@ -77,6 +85,26 @@ def test_hash_file_except():
     )
 
 
+def test_scan_default(capsys, test_fs):
+    """Test running the scanner with default settings."""
+    with patch.object(sys, "argv", ["bogus"]):
+        ioc_scan_cli.main()
+    captured = capsys.readouterr()
+    print(captured.out)
+    assert (
+        captured.out.count("eicar.txt") == 1
+    ), "standard out should contain eicar detection with filename"
+    assert (
+        captured.out.count("lorem.txt") == 0
+    ), "standard out should not contain lorem detection"
+    assert (
+        captured.out.count(EICAR_MD5) == 2
+    ), "standard out detection and tally should match hash"
+    assert (
+        captured.out.count(f"{EICAR_MD5}    1") == 1
+    ), "standard out should show one detected match for the test file"
+
+
 def test_scan_file(capsys):
     """Test running the scanner with an input target file."""
     with patch.object(
@@ -93,13 +121,13 @@ def test_scan_file(capsys):
     captured = capsys.readouterr()
     print(captured.out)
     assert (
-        captured.out.count("eicar.txt") == 1
-    ), "standard out should contain eicar detection with filename"
+        captured.out.count("lorem.txt") == 1
+    ), "standard out should contain lorem detection with filename"
     assert (
-        captured.out.count(EICAR_MD5) == 2
+        captured.out.count(LOREM_SHA256) == 2
     ), "standard out detection and tally should match hash"
     assert (
-        captured.out.count(f"{EICAR_MD5}    1") == 1
+        captured.out.count(f"{LOREM_SHA256}    1") == 1
     ), "standard out should show one detected match for the test file"
 
 
@@ -114,21 +142,16 @@ def test_scan_stdin(capsys):
     print(captured.out)
     assert (
         captured.out.count("lorem.txt") == 1
-    ), "standard out should contain eicar detection with filename"
+    ), "standard out should contain lorem detection with filename"
+    assert (
+        captured.out.count("eicar.txt") == 0
+    ), "standard out should not contain eicar detection"
     assert (
         captured.out.count(LOREM_SHA256) == 2
     ), "standard out detection and tally should match hash"
     assert (
         captured.out.count(f"{LOREM_SHA256}    1") == 1
     ), "standard out should show one detected match for the test file"
-
-
-@pytest.fixture
-def test_fs(fs):
-    """Set up the fake filesystem for testing standalone mode."""
-    fs.add_real_directory("tests/targets")
-    fs.add_real_file("tests/testblob.txt")
-    yield fs
 
 
 def test_ioc_scanner_standalone_no_file(caplog, capsys, test_fs):
@@ -152,6 +175,9 @@ def test_ioc_scanner_standalone_no_file(caplog, capsys, test_fs):
     assert (
         captured.out.count("eicar.txt") == 1
     ), "standard out should contain eicar detection with filename"
+    assert (
+        captured.out.count("lorem.txt") == 0
+    ), "standard out should not contain lorem detection"
     assert (
         captured.out.count(EICAR_MD5) == 2
     ), "standard out detection and tally should match hash"
