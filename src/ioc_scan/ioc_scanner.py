@@ -159,6 +159,7 @@ def ioc_search(blob=None, root="/"):
 
 def main():
     """Provide limited commandline functionality for standalone mode."""
+    # Standard Python Libraries
     import argparse
 
     parser = argparse.ArgumentParser(
