@@ -82,6 +82,7 @@ setup(
             # to never grab the regression version.
             "coveralls != 1.11.0",
             "coverage",
+            "pyfakefs",
             "pytest-cov",
             "pytest",
         ]

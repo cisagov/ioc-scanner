@@ -96,8 +96,8 @@ def hash_file(file):
     return tuple(hasher.hexdigest() for hasher in hashers)
 
 
-def main(blob=None, root="/"):
-    """Start scanning, main entry point."""
+def ioc_search(blob=None, root="/"):
+    """Start scanning, typical entry point."""
     # start the clock
     start_time = datetime.utcnow()
 
@@ -155,6 +155,30 @@ def main(blob=None, root="/"):
         print(f"{indicator}    {tallies[indicator]}")
 
     return 0
+
+
+def main():
+    """Provide limited commandline functionality for standalone mode."""
+    # Standard Python Libraries
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Indicators of compromise (IoC) scanning tool."
+    )
+    parser.add_argument(
+        "-f", "--file", dest="hashfile", help="Get IOC hashes from specified file."
+    )
+    args = parser.parse_args()
+    if args.hashfile:
+        logging.debug("Reading hashes from '%s'.", args.hashfile)
+        with open(args.hashfile) as f:
+            hashblob = f.read()
+        exit_code = ioc_search(hashblob)
+    else:
+        logging.debug("Searching with default configuration.")
+        exit_code = ioc_search()
+
+    return exit_code
 
 
 if __name__ == "__main__":

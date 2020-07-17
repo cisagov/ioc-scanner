@@ -5,3 +5,5 @@ GNU bash, version 4.4.12(1)-release (x86_64-pc-linux-gnu)
 ac56f4b8fac5739ccdb45777d313becf
 EICAR test file
 69630e4574ec6798239b091cda43dca0
+Lorem Ipsum testing file (SHA256)
+56293a80e0394d252e995f2debccea8223e4b5b2b150bee212729b3b39ac4d46

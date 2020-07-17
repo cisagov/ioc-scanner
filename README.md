@@ -70,6 +70,15 @@ ansible --inventory=hosts-file cool-servers --module-name=script \
 --user="ian.kilmister"
 ```
 
+Optionally you can use the `--file` option to use a file on the remote host as a
+source for hashes.
+
+```console
+ansible --inventory=hosts-file cool-servers --module-name=script \
+--args="src/ioc_scan/ioc_scanner.py --file hash_file.txt" --become \
+--ask-become-pass --user="ian.kilmister"
+```
+
 ## Contributing ##
 
 We welcome contributions!  Please see [here](CONTRIBUTING.md) for
