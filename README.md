@@ -55,28 +55,32 @@ b509f8545501588ecd828f970d91afc7c4aa6e238e838bd6a08ee2cd920fbe98    0
 
 ## Stand-alone usage ##
 
-The [ioc_scanner.py](src/ioc_scan/ioc_scanner.py) was designed to be
+The [ioc_scanner.py](src/ioc_scan/ioc_scanner.py) file was designed to be
 dependency-free.  This allows it to be deployed anywhere `python3` is
-available without a lengthy install process.  There is an embedded hash
-list this file that can be easily edited.  This makes running the script
-with tools like [Ansible](https://www.ansible.com) much simpler.
+available without a full install process.  There is an embedded hash
+list in this file that can be easily edited.  This makes it possible to run
+this tool with automation tools like [Ansible](https://www.ansible.com).
 
 Here is an example of running the script remotely using the Ansible
-[script module](https://docs.ansible.com/ansible/latest/modules/script_module.html):
+[script module](https://docs.ansible.com/ansible/latest/modules/script_module.html)
+:
 
 ```console
-ansible --inventory=hosts-file cool-servers --module-name=script \
---args="src/ioc_scan/ioc_scanner.py" --become --ask-become-pass \
---user="ian.kilmister"
+ansible --inventory=hosts-file cool-servers \
+        --module-name=ansible.builtin.script \
+        --args="cmd=src/ioc_scan/ioc_scanner.py executable=python3" \
+        --become --ask-become-pass --user="ian.kilmister"
 ```
 
 Optionally you can use the `--file` option to use a file on the remote host as a
 source for hashes.
 
 ```console
-ansible --inventory=hosts-file cool-servers --module-name=script \
---args="src/ioc_scan/ioc_scanner.py --file hash_file.txt" --become \
---ask-become-pass --user="ian.kilmister"
+ansible --inventory=hosts-file cool-servers \
+        --module-name=ansible.builtin.script \
+        --args="'cmd=src/ioc_scan/ioc_scanner.py --file hash_file.txt] \
+               executable=python3" \
+        --become --ask-become-pass --user="ian.kilmister"
 ```
 
 ## Contributing ##
