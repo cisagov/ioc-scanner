@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Indicators of compromise (IoC) scanning tool.
 
 This script can take a blob of text that "should" contain MD5 hashes
@@ -65,7 +64,3 @@ def main():
     # Stop logging and clean up
     logging.shutdown()
     return exit_code
-
-
-if __name__ == "__main__":
-    sys.exit(main())
