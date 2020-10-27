@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Indicators of compromise (IoC) scanning tool.
 
 This script can take a blob of text that "should" contain MD5 hashes

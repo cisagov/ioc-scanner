@@ -23,6 +23,8 @@ log_levels = (
     pytest.param("critical2", marks=pytest.mark.xfail),
 )
 
+PROJECT_VERSION = ioc_scan.__version__
+
 TEST_HASHFILE = "tests/testblob.txt"
 EICAR_MD5 = "69630e4574ec6798239b091cda43dca0"
 LOREM_SHA256 = "56293a80e0394d252e995f2debccea8223e4b5b2b150bee212729b3b39ac4d46"
@@ -33,6 +35,11 @@ def test_fs(fs):
     """Set up the fake filesystem for testing with no target."""
     fs.add_real_directory("tests/targets")
     fs.add_real_file("tests/testblob.txt")
+
+    # In the pytest 6.x release something has changed where the caplog fixture
+    # needs to access /dev/null as part of its operation. As a result we need to
+    # manually create it in the fake filesystem.
+    fs.create_file("dev/null")
     yield fs
 
 
@@ -43,7 +50,24 @@ def test_version(capsys):
             ioc_scan_cli.main()
     captured = capsys.readouterr()
     assert (
-        captured.out == f"{ioc_scan.__version__}\n"
+        captured.out == f"{PROJECT_VERSION}\n"
+    ), "standard output by '--version' should agree with module.__version__"
+
+
+def test_running_as_module(capsys):
+    """Verify that the __main__.py file loads correctly."""
+    with pytest.raises(SystemExit):
+        with patch.object(sys, "argv", ["bogus", "--version"]):
+            # F401 is a "Module imported but unused" warning. This import
+            # emulates how this project would be run as a module. The only thing
+            # being done by __main__ is importing the main entrypoint of the
+            # package and running it, so there is nothing to use from this
+            # import. As a result, we can safely ignore this warning.
+            # cisagov Libraries
+            import ioc_scan.__main__  # noqa: F401
+    captured = capsys.readouterr()
+    assert (
+        captured.out == f"{PROJECT_VERSION}\n"
     ), "standard output by '--version' should agree with module.__version__"
 
 
@@ -158,7 +182,9 @@ def test_ioc_scanner_standalone_no_file(caplog, capsys, test_fs):
     """Test running the scanner in standalone mode."""
     with caplog.at_level(logging.DEBUG):
         with patch.object(
-            sys, "argv", ["bogus"],
+            sys,
+            "argv",
+            ["bogus"],
         ):
             ioc_scanner.main()
 
@@ -190,7 +216,9 @@ def test_ioc_scanner_standalone_file(caplog, capsys, test_fs):
     """Test running the scanner in standalone mode with an input target file."""
     with caplog.at_level(logging.DEBUG):
         with patch.object(
-            sys, "argv", ["bogus", f"--file={TEST_HASHFILE}"],
+            sys,
+            "argv",
+            ["bogus", f"--file={TEST_HASHFILE}"],
         ):
             ioc_scanner.main()
 
