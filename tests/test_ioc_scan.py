@@ -36,10 +36,6 @@ def test_fs(fs):
     fs.add_real_directory("tests/targets")
     fs.add_real_file("tests/testblob.txt")
 
-    # In the pytest 6.x release something has changed where the caplog fixture
-    # needs to access /dev/null as part of its operation. As a result we need to
-    # manually create it in the fake filesystem.
-    fs.create_file("dev/null")
     yield fs
 
 
