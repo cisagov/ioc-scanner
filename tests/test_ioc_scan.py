@@ -77,11 +77,15 @@ def test_log_levels(level):
             assert (
                 logging.root.hasHandlers() is False
             ), "root logger should not have handlers yet"
-            return_code = ioc_scan_cli.main()
+            return_code = None
+            try:
+                return_code = ioc_scan_cli.main()
+            except SystemExit as sys_exit:
+                return_code = sys_exit.code
             assert (
                 logging.root.hasHandlers() is True
             ), "root logger should now have a handler"
-            assert return_code == 0, "main() should return success (0)"
+            assert return_code is None, "main() should return success"
 
 
 def test_hash_file_hashing():
