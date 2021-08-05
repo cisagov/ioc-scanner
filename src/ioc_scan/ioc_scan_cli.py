@@ -32,7 +32,7 @@ from . import ioc_scanner
 from ._version import __version__
 
 
-def main():
+def main() -> None:
     """Set up logging and call the ioc-scanner."""
     args = docopt.docopt(__doc__, version=__version__)
     # Set up logging
@@ -47,7 +47,7 @@ def main():
             "are debug, info, warning, and error.",
             log_level,
         )
-        return 1
+        sys.exit(1)
 
     # see if the user is providing any external hash blob data
     hashblob = None
@@ -63,4 +63,6 @@ def main():
 
     # Stop logging and clean up
     logging.shutdown()
-    return exit_code
+
+    if exit_code:
+        sys.exit(exit_code)
