@@ -169,10 +169,10 @@ def main():
         "--debug",
         dest="debug_output",
         action="store_true",
-        help="Enable debug logging output.",
+        help="enable debug logging output",
     )
     parser.add_argument(
-        "-f", "--file", dest="hashfile", help="Get IOC hashes from specified file."
+        "-f", "--file", dest="hashfile", help="get IOC hashes from specified file"
     )
     args = parser.parse_args()
 
