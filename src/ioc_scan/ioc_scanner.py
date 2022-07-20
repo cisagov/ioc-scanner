@@ -165,9 +165,22 @@ def main():
         description="Indicators of compromise (IoC) scanning tool."
     )
     parser.add_argument(
+        "-d",
+        "--debug",
+        dest="debug_output",
+        action="store_true",
+        help="Enable debug logging output.",
+    )
+    parser.add_argument(
         "-f", "--file", dest="hashfile", help="Get IOC hashes from specified file."
     )
     args = parser.parse_args()
+
+    logging.basicConfig(
+        format="%(asctime)-15s %(levelname)s %(message)s",
+        level=logging.DEBUG if args.debug_output else logging.INFO,
+    )
+
     if args.hashfile:
         logging.debug("Reading hashes from '%s'.", args.hashfile)
         with open(args.hashfile) as f:
