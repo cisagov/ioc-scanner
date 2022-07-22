@@ -46,6 +46,8 @@ GNU bash, version 5.0.3(1)-release (x86_64-pc-linux-gnu)
 4600132e6a7ae0d451566943a9e79736
 GNU bash, version 5.1.16(1)-release (x86_64-redhat-linux-gnu)
 7baf6024981d924086fe2daf3c7f1b99
+zsh 5.7.1 (x86_64-apple-darwin19.0)
+2d189e9756804162bbcf8ee8374a2e40
 EICAR test file
 69630e4574ec6798239b091cda43dca0
 """
