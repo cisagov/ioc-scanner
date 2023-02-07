@@ -1,9 +1,8 @@
 # ioc-scanner 🔎🆖 #
 
 [![GitHub Build Status](https://github.com/cisagov/ioc-scanner/workflows/build/badge.svg)](https://github.com/cisagov/ioc-scanner/actions)
+[![CodeQL](https://github.com/cisagov/ioc-scanner/workflows/CodeQL/badge.svg)](https://github.com/cisagov/ioc-scanner/actions/workflows/codeql-analysis.yml)
 [![Coverage Status](https://coveralls.io/repos/github/cisagov/ioc-scanner/badge.svg?branch=develop)](https://coveralls.io/github/cisagov/ioc-scanner?branch=develop)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/cisagov/ioc-scanner.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/cisagov/ioc-scanner/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/cisagov/ioc-scanner.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/cisagov/ioc-scanner/context:python)
 [![Known Vulnerabilities](https://snyk.io/test/github/cisagov/ioc-scanner/develop/badge.svg)](https://snyk.io/test/github/cisagov/ioc-scanner)
 
 The ioc-scanner can search a filesystem for indicators of compromise (IoC).
