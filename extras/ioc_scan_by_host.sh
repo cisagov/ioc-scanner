@@ -49,8 +49,8 @@ echo Instances are: "${instances[*]}"
 
 # Loop through all instance IDs
 for instance_id in "${instances[@]}"; do
-  # "echo -e" allows us to use \n for newlines.
-  echo -e "\nSearching $instance_id:"
+  echo
+  echo Searching "$instance_id":
 
   # Use grep to search for IOC strings in log files.  We use the --invert-match
   # grep flag to exclude files that contain our grep command (e.g. sudo.log) and
