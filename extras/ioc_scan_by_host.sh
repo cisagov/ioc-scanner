@@ -11,13 +11,13 @@ set -o errexit
 set -o pipefail
 
 if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ $# -lt 2 ]; then
-  echo "Usage: $0 ioc-file <instance-id>..."
+  echo Usage: "$0" ioc-file \<instance-id\>...
   exit 1
 fi
 
 # Check if IOC file exists.
 if [ ! -f "$1" ]; then
-  echo "IOC file '$1' does not exist - exiting."
+  echo IOC file "$1" does not exist - exiting.
   exit 1
 fi
 
@@ -29,7 +29,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
 done < "$1"
 
 if [ ${#iocList[@]} -eq 0 ]; then
-  echo "No IOCs found in '$1' - exiting."
+  echo No IOCs found in "$1" - exiting.
   exit 1
 fi
 
@@ -44,13 +44,13 @@ exec 2> >(tee -ai "$logfile" >&2)
 # and IOC file); the rest are the instance IDs.
 instances=("${@:2}")
 
-echo "IOC List is: \"${iocList[*]}\""
-echo "Instances are: \"${instances[*]}\""
+echo IOC List is: "${iocList[*]}"
+echo Instances are: "${instances[*]}"
 
 # Loop through all instance IDs
 for instance_id in "${instances[@]}"; do
-  echo "
-Searching $instance_id:"
+  # "echo -e" allows us to use \n for newlines.
+  echo -e "\nSearching $instance_id:"
 
   # Use grep to search for IOC strings in log files.  We use the --invert-match
   # grep flag to exclude files that contain our grep command (e.g. sudo.log) and
@@ -59,5 +59,5 @@ Searching $instance_id:"
     --document=AWS-StartInteractiveCommand \
     --parameters="command='for i in ${iocList[*]}; do sudo grep --ignore-case --recursive --extended-regexp \$i /var/log/* | grep --invert-match ignore-case | grep  --invert-match .journal | echo \$(wc --lines) found for \$i; done'"
 
-  echo "Search of $instance_id is complete."
+  echo Search of "$instance_id" is complete.
 done
