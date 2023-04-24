@@ -90,7 +90,7 @@ directory:
 ```console
 $ ./extras/ioc_scan_by_host.sh my-ioc-strings.txt i-0123456789abcdef0
 
-IOC List is: "192.168.1[.]1 sketchy-site[.]org IOC_HASH_1 IOC_HASH_2"
+IOC List is: "192.168.1[.]1 sketchy-site[.]org IOC_STRING_1 IOC_STRING_2"
 Instances are: "i-0123456789abcdef0"
 
 Searching i-0123456789abcdef0:
@@ -98,8 +98,8 @@ Searching i-0123456789abcdef0:
 Starting session with SessionId: iam.username-0123456789abcdef0
 0 found for 192.168.1[.]1
 0 found for sketchy-site[.]org
-0 found for IOC_HASH_1
-0 found for IOC_HASH_2
+0 found for IOC_STRING_1
+0 found for IOC_STRING_2
 
 Exiting session with sessionId: iam.username-0123456789abcdef0.
 
