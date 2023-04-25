@@ -82,6 +82,30 @@ ansible --inventory=hosts-file cool-servers \
         --become --ask-become-pass --user="ian.kilmister"
 ```
 
+To scan for indicator strings on AWS instances that are accessible via
+[SSM](https://docs.aws.amazon.com/systems-manager/latest/userguide/what-is-systems-manager.html),
+the `ioc_scan_by_host.sh` shell script has been provided in the `extras`
+directory:
+
+```console
+$ ./extras/ioc_scan_by_host.sh my-ioc-strings.txt i-0123456789abcdef0
+
+IOC List is: "192.168.1[.]1 sketchy-site[.]org IOC_STRING_1 IOC_STRING_2"
+Instances are: "i-0123456789abcdef0"
+
+Searching i-0123456789abcdef0:
+
+Starting session with SessionId: iam.username-0123456789abcdef0
+0 found for 192.168.1[.]1
+0 found for sketchy-site[.]org
+0 found for IOC_STRING_1
+0 found for IOC_STRING_2
+
+Exiting session with sessionId: iam.username-0123456789abcdef0.
+
+Search of i-0123456789abcdef0 is complete.
+```
+
 ## Contributing ##
 
 We welcome contributions!  Please see [`CONTRIBUTING.md`](CONTRIBUTING.md) for
