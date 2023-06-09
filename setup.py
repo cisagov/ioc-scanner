@@ -90,7 +90,7 @@ setup(
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
     include_package_data=True,
-    install_requires=["docopt", "setuptools >= 24.2.0"],
+    install_requires=["docopt", "setuptools >= 24.2.0", "stix"],
     extras_require={
         "test": [
             "coverage",
@@ -107,11 +107,12 @@ setup(
             "pytest",
         ]
     },
-    # Conveniently allows one to run the CLI tool as `ioc-scan`
+    # Conveniently allows one to run the CLI tools
     entry_points={
         "console_scripts": [
             "ioc-scan = ioc_scan.ioc_scan_cli:main",
             "ioc-scan-bare = ioc_scan.ioc_scanner:main",
+            "stix-extract = ioc_scan.stix_extract:main",
         ]
     },
 )
