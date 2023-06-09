@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# Search for indicator of compromise (IOC) strings on a list of AWS instances
-# via SSM.  The filename specified in the first argument (ioc-file)
-# should contain a list of IOC strings, one per line.
+# Search for indicator of compromise (IOC) strings on a list of AWS
+# instances via SSM.  The filename specified in the first argument
+# (ioc-file) should contain a list of IOC strings, one per line.
 #
 # Usage: ./ioc_scan_by_host.sh ioc-file <instance-id>...
 
@@ -21,8 +21,8 @@ if [ ! -f "$1" ]; then
   exit 1
 fi
 
-# Read IOC strings from file.  [[ -n "$line" ]] handles the case where the last
-# line doesn't end with a newline.
+# Read IOC strings from file.  [[ -n "$line" ]] handles the case where
+# the last line doesn't end with a newline.
 iocList=()
 while IFS= read -r line || [[ -n "$line" ]]; do
   iocList+=("$line")
@@ -40,8 +40,8 @@ logfile="./$today-ioc-scan.log"
 exec > >(tee -ai "$logfile")
 exec 2> >(tee -ai "$logfile" >&2)
 
-# Get list of arguments passed to script, but ignore the first two (script name
-# and IOC file); the rest are the instance IDs.
+# Get list of arguments passed to script, but ignore the first two
+# (script name and IOC file); the rest are the instance IDs.
 instances=("${@:2}")
 
 echo IOC List is: "${iocList[*]}"
@@ -52,12 +52,13 @@ for instance_id in "${instances[@]}"; do
   echo
   echo Searching "$instance_id":
 
-  # Use grep to search for IOC strings in log files.  We use the --invert-match
-  # grep flag to exclude files that contain our grep command (e.g. sudo.log) and
-  # also to exclude .journal file matches.
+  # Use find-grep to search for IOC strings in log files, ignoring
+  # *.journal files.  We pipe the result into another grep process
+  # that uses the --invert-match grep flag to exclude matches (e.g.,
+  # from sudo.log) that contain our grep command (e.g. sudo.log).
   aws ssm start-session --target="$instance_id" \
     --document=AWS-StartInteractiveCommand \
-    --parameters="command='for i in ${iocList[*]}; do sudo grep --ignore-case --recursive --extended-regexp \$i /var/log/* | grep --invert-match ignore-case | grep  --invert-match .journal | echo \$(wc --lines) found for \$i; done'"
+    --parameters="command='for i in ${iocList[*]}; do sudo find /var/log -type f -not -name \*\.journal -exec grep --ignore-case --recursive --extended-regexp \$i {} \; | grep --invert-match -- --ignore-case\ --recursive\ --extended-regexp | echo \$(wc --lines) found for \$i; done'"
 
   echo Search of "$instance_id" is complete.
 done

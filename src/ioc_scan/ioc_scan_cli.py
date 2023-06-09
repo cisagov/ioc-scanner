@@ -2,7 +2,7 @@
 
 This script can take a blob of text that "should" contain MD5 hashes
 and scan a machine looking for files that match.  It will report the
-location of each mataching file as well as a summary containing the
+location of each matching file as well as a summary containing the
 tallies by hash.  Execution time is also reported.
 
 This script should be run as a priveledged user.
