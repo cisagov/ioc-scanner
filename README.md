@@ -82,6 +82,43 @@ ansible --inventory=hosts-file cool-servers \
         --become --ask-become-pass --user="ian.kilmister"
 ```
 
+## Helper utilities ##
+
+Additional helper tools and scripts are bundled with the ioc-scanner.
+
+### `stix-extract` ###
+
+```console
+Extract valuable information from STIX (Structured Threat Information Expression) files.
+
+This script parses the STIX file to extract and print the following observables:
+- IP addresses, which are associated with network indicators.
+- Hashes (SHA256, SHA1, MD5) of files, prioritizing by hash type.
+- Fully Qualified Domain Names (FQDNs), which can help identify associated domains.
+- URLs, which could represent potential threat sources or command and control servers.
+
+The script prints each observable type in a separate section with a clear title for easy reading.
+
+Usage:
+    stix-extract [<file>]
+
+Options:
+    -h --help   Show this screen.
+
+Arguments:
+    file        The path to the STIX xml file to parse. If not specified, reads from standard input.
+```
+
+The `stix-extract` utility can be used alone or in conjunction with the
+`ioc-scan` tool to scan for IoCs in a STIX file.
+
+```console
+curl https://www.cisa.gov/sites/default/files/2023-06/aa23-158a.stix_.xml \
+| stix-extract | ioc-scan --stdin --target=.
+```
+
+### `ioc_scan_by_host.sh` ###
+
 To scan for indicator strings on AWS instances that are accessible via
 [SSM](https://docs.aws.amazon.com/systems-manager/latest/userguide/what-is-systems-manager.html),
 the `ioc_scan_by_host.sh` shell script has been provided in the `extras`
