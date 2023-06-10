@@ -101,9 +101,8 @@ def sort_ip_address(ip):
     Returns:
         tuple: a tuple containing two elements - the IP version (int) and the integer representation of the IP address (int).
     """
-    ip_version = ipaddress.ip_address(ip).version
-    ip_int = int(ipaddress.ip_address(ip))
-    return ip_version, ip_int
+    ip_obj = ipaddress.ip_address(ip)
+    return (ip_obj.version, int(ip_obj))
 
 
 def main():
