@@ -31,6 +31,8 @@ import sys
 from docopt import docopt
 from stix.core import STIXPackage
 
+from ._version import __version__
+
 
 def extract_stix_info(stix_file):
     """
@@ -108,7 +110,7 @@ def sort_ip_address(ip):
 def main():
     """Parse command line arguments and extract information from the STIX file."""
     # Parse command line arguments
-    args = docopt(__doc__, version="1.5.1")
+    args = docopt(__doc__, version=__version__)
     # Extract data from the STIX file or from stdin
     stix_file = (
         args["<file>"]
