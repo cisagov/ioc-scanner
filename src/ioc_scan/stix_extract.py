@@ -48,7 +48,7 @@ def extract_stix_info(stix_file):
     try:
         stix_package = STIXPackage.from_xml(stix_file)
     except Exception as e:
-        print(f"Error parsing STIX file: {e}")
+        sys.stderr.write(f"Error parsing STIX file: {e}")
         raise e
 
     # Initialize lists to store IP addresses, hashes, FQDNs, and URLs
