@@ -58,7 +58,7 @@ for instance_id in "${instances[@]}"; do
   # from sudo.log) that contain our grep command (e.g. sudo.log).
   aws ssm start-session --target="$instance_id" \
     --document=AWS-StartInteractiveCommand \
-    --parameters="command='for i in ${iocList[*]}; do sudo find /var/log -type f -not -name \*\.journal -exec grep --ignore-case --recursive --extended-regexp \$i {} \; | grep --invert-match -- --ignore-case\ --recursive\ --extended-regexp | echo \$(wc --lines) found for \$i; done'"
+    --parameters="command='for i in ${iocList[*]}; do sudo find /var/log -type f -not -name \*\.journal -exec grep --ignore-case --recursive \$i {} \; | grep --invert-match -- --ignore-case\ --recursive\ | echo \$(wc --lines) found for \$i; done'"
 
   echo Search of "$instance_id" is complete.
 done
