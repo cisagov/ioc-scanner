@@ -42,10 +42,10 @@ SHA-1:  5C8F83CC4FF57E7C67925DF4D9DAABE5D0CC07E2
 few things that should hit:
 GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin18)
 0313fd399b143fc40cd52a1679018305
-GNU bash, version 5.0.3(1)-release (x86_64-pc-linux-gnu)
-4600132e6a7ae0d451566943a9e79736
-GNU bash, version 5.1.16(1)-release (x86_64-redhat-linux-gnu)
-7baf6024981d924086fe2daf3c7f1b99
+GNU bash, version 5.1.4(1)-release (x86_64-pc-linux-gnu)
+c283d8a2688baef860c41c49b79a82db
+GNU bash, version 5.2.15(1)-release (x86_64-redhat-linux-gnu)
+7756ec11ca333b16f3ec6a1b083f3784
 zsh 5.7.1 (x86_64-apple-darwin19.0)
 2d189e9756804162bbcf8ee8374a2e40
 EICAR test file
