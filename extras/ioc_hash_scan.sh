@@ -162,13 +162,13 @@ for i in "${serverList[@]}"; do
 
         cd "$curdir" || exit
 
-        # # Run ioc_scanner.py on target instance
-        # echo "Scan $instanceName for IOC Hashes"
-        # AWS_SHARED_CREDENTIALS_FILE="$AWS_CREDENTIALS_FILE" \
-        #         aws --profile="$AWSPROF" --region="$AWS_REGION" \
-        #         ssm start-session --target="$i" \
-        #         --document=AWS-StartInteractiveCommand \
-        #         --parameters="command=python3 ~/src/ioc_scan/ioc_scanner.py" >>"$logfile"
+        # Run ioc_scanner.py on target instance
+        echo "Scan $instanceName for IOC Hashes"
+        AWS_SHARED_CREDENTIALS_FILE="$AWS_CREDENTIALS_FILE" \
+                aws --profile="$AWSPROF" --region="$AWS_REGION" \
+                ssm start-session --target="$i" \
+                --document=AWS-StartInteractiveCommand \
+                --parameters="command=python3 ~/src/ioc_scan/ioc_scanner.py" >>"$logfile"
 
         # Killing port forwading so we can do this again on the next Instance.
         while pgrep -fq session-manager-plugin; do
