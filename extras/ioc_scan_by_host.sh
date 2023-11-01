@@ -55,7 +55,7 @@ for instance_id in "${instances[@]}"; do
   # Use find-zgrep to search for IOC strings in log files (including
   # gzipped log files), ignoring *.journal files.  We pipe the result
   # into another grep process that uses the --invert-match grep flag
-  # to exclude matches (e.g., from sudo.log) that contain our grep
+  # to exclude matches (e.g. from sudo.log) that contain our zgrep
   # command (e.g. sudo.log).
   aws ssm start-session --target="$instance_id" \
     --document=AWS-StartInteractiveCommand \
