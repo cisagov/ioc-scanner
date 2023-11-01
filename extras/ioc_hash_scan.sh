@@ -17,7 +17,7 @@
 # source ~/.bashrc
 #
 # This script assumes that it exists in the ioc-scanner/extras/ directory.
-# If this is different, please edit the variable $pydir to point to 
+# If this is different, please edit the variable $pydir to point to
 # the directory containing ioc_scanner.py
 
 set -o nounset
