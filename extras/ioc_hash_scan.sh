@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-##Add the hashes to the blob at src/ioc_scan/ioc_scanner.py
+# Add the hashes to the blob at src/ioc_scan/ioc_scanner.py
 #
 #
-#  The filename specified in the first argument
+# The filename specified in the first argument
 # (instance-list-file) should contain a list of instance id strings, one per line.
 #
 # Usage: ./ioc_hash_scan.sh instance-list-file <AWS_PROFILE>
