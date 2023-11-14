@@ -101,7 +101,7 @@ function installNC() {
       aws --profile="$AWSPROF" --region="$AWS_REGION" \
       ssm start-session --target="$i" \
       --document=AWS-StartInteractiveCommand \
-      --parameters="command='sudo yum install netcat -y'"
+      --parameters="command='sudo dnf --assumeyes install netcat'"
   fi
 }
 
