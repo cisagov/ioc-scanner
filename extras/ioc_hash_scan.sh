@@ -57,7 +57,7 @@ today=$(date +%Y-%m-%d)
 logfile="$HOME/$today-ioc-scanner-hashscan.log"
 
 # Suppress some verbose stdout.
-# Suppress stnderr of pkill command
+# Suppress stderr of pkill command
 exec > >(grep --invert-match 'Starting\|Exiting')
 exec 2> >(grep --invert-match 'SIGTERM')
 
