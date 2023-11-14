@@ -158,7 +158,7 @@ for i in "${serverList[@]}"; do
   cd "$pydir" || exit
 
   echo "Upload lastest ioc_scanner.py to $instanceName"
-  tar czf - ./ioc_scanner.py | nc localhost 5555
+  tar --create --gzip --file - ./ioc_scanner.py | nc localhost 5555
 
   cd "$curdir" || exit
 
