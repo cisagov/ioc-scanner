@@ -95,7 +95,7 @@ function installNC() {
       aws --profile="$AWSPROF" --region="$AWS_REGION" \
       ssm start-session --target="$i" \
       --document=AWS-StartInteractiveCommand \
-      --parameters="command='sudo apt-get install netcat -y'"
+      --parameters="command='sudo apt-get --yes install netcat'"
   else
     AWS_SHARED_CREDENTIALS_FILE="$AWS_CREDENTIALS_FILE" \
       aws --profile="$AWSPROF" --region="$AWS_REGION" \
