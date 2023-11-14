@@ -24,7 +24,7 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-# Directory path of the ioc_scanner.py
+# Directory path of the ioc_scanner.py file
 pydir="../src/ioc_scan/"
 
 if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ $# -lt 2 ]; then
