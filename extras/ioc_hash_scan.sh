@@ -145,7 +145,7 @@ for i in "${serverList[@]}"; do
     aws --profile="$AWSPROF" --region="$AWS_REGION" \
     ssm start-session --target="$i" \
     --document=AWS-StartInteractiveCommand \
-    --parameters="command='if [ ! -d ~/src/ioc_scan ]; then mkdir -p ~/src/ioc_scan; fi'"
+    --parameters="command='if [ ! -d ~/src/ioc_scan ]; then mkdir --parents ~/src/ioc_scan; fi'"
 
   #Install netcat and start listening on port 6666
   echo "Verifying netcat on $instanceName"
