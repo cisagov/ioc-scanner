@@ -127,7 +127,8 @@ echo "IOC Hash Scan - $today-$(date +%H:%M:%S)" > "$logfile"
 for i in "${serverList[@]}"; do
   OS="$(getOSType)"
   if [[ "$OS" != "Debian" && "$OS" != "Fedora" ]]; then
-    echo "Non-supported OS Type"
+    echo "Instance $i is running an operating system ($OS) that is not supported by this script."
+    echo "Currently only Debian and Fedora are supported - exiting."
     exit 1
   fi
 
