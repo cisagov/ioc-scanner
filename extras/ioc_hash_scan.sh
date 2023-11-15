@@ -76,7 +76,7 @@ function getHost() {
   HOST=$(AWS_SHARED_CREDENTIALS_FILE="$AWS_CREDENTIALS_FILE" \
     aws --profile="$AWSPROF" --region="$AWS_REGION" \
     ssm start-session --target="$i" \
-    --document=AWS-StartInteractiveCommand \
+    --document=AWS-StartNonInteractiveCommand \
     --parameters="command=hostname" \
     --output text)
   echo "$HOST" | grep --invert-match "session" | sed '/^$/d'
