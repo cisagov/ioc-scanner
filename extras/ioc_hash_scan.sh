@@ -50,7 +50,7 @@ if [ ${#serverList[@]} -eq 0 ]; then
   exit 1
 fi
 
-# Path of aws credentials file
+# Get AWS profile from command line argument
 AWSPROF="$2"
 
 today=$(date +%Y-%m-%d)
