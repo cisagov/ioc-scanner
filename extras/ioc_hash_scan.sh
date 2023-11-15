@@ -180,7 +180,7 @@ for i in "${serverList[@]}"; do
   echo "------------------------------------------------------------------------" | tee -a "$logfile"
 done
 
-##clean up log output for readability
+# Clean up log output for readability
 while grep --quiet --ignore-case "session" "$logfile"; do
   sed -i '' '/session/d' "$logfile"
 done
