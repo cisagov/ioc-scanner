@@ -164,7 +164,7 @@ for i in "${serverList[@]}"; do
   cd "$curdir" || exit
 
   # Run ioc_scanner.py on target instance
-  echo "Scan $instanceName for IOC Hashes"
+  echo "Scan $instanceName for IOC hashes"
   AWS_SHARED_CREDENTIALS_FILE="$AWS_CREDENTIALS_FILE" \
     aws --profile="$AWSPROF" --region="$AWS_REGION" \
     ssm start-session --target="$i" \
