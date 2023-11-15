@@ -134,7 +134,7 @@ for i in "${serverList[@]}"; do
 
   instanceName=$(getHost)
 
-  echo "Beginning scan of instance $i -- $instanceName" | tee --append "$logfile"
+  echo "Beginning scan of instance $i -- $instanceName" | tee -a "$logfile"
 
   # Start Port Forwarding
   echo "Begining port forwarding"
