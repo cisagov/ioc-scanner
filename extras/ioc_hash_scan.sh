@@ -148,7 +148,7 @@ for i in "${serverList[@]}"; do
     --document=AWS-StartInteractiveCommand \
     --parameters="command='if [ ! -d ~/src/ioc_scan ]; then mkdir --parents ~/src/ioc_scan; fi'"
 
-  #Install netcat and start listening on port 6666
+  # Install netcat and start listening on port 6666
   echo "Verifying netcat on $instanceName"
   installNC
   echo "Begin listening on $instanceName"
