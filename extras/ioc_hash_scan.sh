@@ -46,7 +46,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
 done < "$1"
 
 if [ ${#serverList[@]} -eq 0 ]; then
-  echo No Instances found in "$1" - exiting.
+  echo No instances found in "$1" - exiting.
   exit 1
 fi
 
