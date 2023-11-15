@@ -151,7 +151,7 @@ for i in "${serverList[@]}"; do
   # Install netcat and start listening on port 6666
   echo "Verifying netcat on $instanceName"
   installNC
-  echo "Begin listening on $instanceName"
+  echo "Begin listening on $instanceName (port 6666)"
   startListen &
 
   # Copy latest ioc_scanner.py to target instance
