@@ -1,7 +1,6 @@
 #!/bin/bash
 #
-# Add the hashes to the blob at src/ioc_scan/ioc_scanner.py
-#
+# This script will scan AWS instances occurances of IOC hashes listed in the blob at src/ioc_scan/ioc_scanner.py
 #
 # The filename specified in the first argument
 # (instance-list-file) should contain a list of instance id strings, one per line.
@@ -140,7 +139,7 @@ for i in "${serverList[@]}"; do
   echo "Beginning port forwarding (local port 5555 to remote port 6666)"
   portForward &
 
-  # Create ~/src/ioc_scan directory on instance
+  # Create ~/src/ioc_scan directory on Instance
   echo "Verifying ~/src/ioc_scan directory on $instanceName"
   AWS_SHARED_CREDENTIALS_FILE="$AWS_CREDENTIALS_FILE" \
     aws --profile="$AWSPROF" --region="$AWS_REGION" \
@@ -148,39 +147,39 @@ for i in "${serverList[@]}"; do
     --document=AWS-StartInteractiveCommand \
     --parameters="command='if [ ! -d ~/src/ioc_scan ]; then mkdir --parents ~/src/ioc_scan; fi'"
 
-  # Install netcat and start listening on port 6666
+  #Install netcat and start listening on port 6666
   echo "Verifying netcat on $instanceName"
   installNC
-  echo "Begin listening on $instanceName (port 6666)"
+  echo "Begin listening on $instanceName"
   startListen &
 
-  # Copy ioc_scanner.py to target instance
+  # Copy latest ioc_scanner.py to target instance
   curdir=$(pwd)
   cd "$pydir" || exit
 
-  echo "Upload ioc_scanner.py to $instanceName"
+  echo "Upload lastest ioc_scanner.py to $instanceName"
   tar --create --gzip --file - ./ioc_scanner.py | nc localhost 5555
 
   cd "$curdir" || exit
 
   # Run ioc_scanner.py on target instance
-  echo "Scan $instanceName for IOC hashes"
+  echo "Scan $instanceName for IOC Hashes"
   AWS_SHARED_CREDENTIALS_FILE="$AWS_CREDENTIALS_FILE" \
     aws --profile="$AWSPROF" --region="$AWS_REGION" \
     ssm start-session --target="$i" \
     --document=AWS-StartInteractiveCommand \
     --parameters="command=python3 ~/src/ioc_scan/ioc_scanner.py" >> "$logfile"
 
-  # Killing port forwarding so we can do this again on the next instance.
+  # Killing port forwading so we can do this again on the next Instance.
   while pgrep -fq session-manager-plugin; do
     pkill session-manager-plugin
-    # We need to wait, as some race conditions can occur.
+    # We need to wait, as some race conditions can occure.
     sleep 5
   done
   echo "------------------------------------------------------------------------" | tee -a "$logfile"
 done
 
-# Clean up log output for readability
+##clean up log output for readability
 while grep --quiet --ignore-case "session" "$logfile"; do
   sed -i '' '/session/d' "$logfile"
 done
