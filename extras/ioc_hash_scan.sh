@@ -7,7 +7,7 @@
 #
 # Usage: ./ioc_hash_scan.sh instance-list-file <AWS_PROFILE>
 #
-# Must have AWS_SHARED_CREDENTIALS_FILE and AWS_REGION exported to environmental varialble
+# Must have AWS_SHARED_CREDENTIALS_FILE and AWS_REGION available as environmental variables.
 #
 # Example - Run:
 # export AWS_CREDENTIALS_FILE="$HOME/.aws/credentials" >> "$HOME/.bashrc"
