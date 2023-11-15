@@ -174,7 +174,7 @@ for i in "${serverList[@]}"; do
   # Killing port forwarding so we can do this again on the next instance.
   while pgrep -fq session-manager-plugin; do
     pkill session-manager-plugin
-    # We need to wait, as some race conditions can occure.
+    # We need to wait, as some race conditions can occur.
     sleep 5
   done
   echo "------------------------------------------------------------------------" | tee -a "$logfile"
