@@ -5,15 +5,7 @@
 # The filename specified in the first argument
 # (instance-list-file) should contain a list of instance id strings, one per line.
 #
-# Usage: ./ioc_hash_scan.sh instance-list-file <AWS_PROFILE>
-#
-# Must have AWS_SHARED_CREDENTIALS_FILE and AWS_REGION available as environmental variables.
-#
-# Example - Run:
-# export AWS_CREDENTIALS_FILE="$HOME/.aws/credentials" >> "$HOME/.bashrc"
-# export AWS_REGION="us-east-1" >> "$HOME/.bashrc"
-# Then reload your shell, like
-# source ~/.bashrc
+# Usage: AWS_SHARED_CREDENTIALS_FILE=~/.aws/my-creds AWS_REGION=us-east-1 AWS_PROFILE=my-profile ./ioc_hash_scan.sh instance-list-file
 #
 # This script assumes that it exists in the ioc-scanner/extras/ directory.
 # If it does not, please edit the variable $pydir to point to
@@ -26,8 +18,8 @@ set -o pipefail
 # Directory path of the ioc_scanner.py file
 pydir="../src/ioc_scan/"
 
-if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ $# -lt 2 ]; then
-  echo Usage: "$0" instance-list-file \<AWS_PROFILE\>
+if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ $# -gt 1 ]; then
+  echo Usage: AWS_SHARED_CREDENTIALS_FILE=~/.aws/my-creds AWS_REGION=us-east-1 AWS_PROFILE=my-profile "$0" instance-list-file
   exit 1
 fi
 
@@ -49,9 +41,6 @@ if [ ${#serverList[@]} -eq 0 ]; then
   exit 1
 fi
 
-# Get AWS profile from command line argument
-AWSPROF="$2"
-
 today=$(date +%Y-%m-%d)
 logfile="$HOME/$today-ioc-scanner-hashscan.log"
 
@@ -62,9 +51,7 @@ exec 2> >(grep --invert-match 'SIGTERM')
 
 ## FUNCTIONS
 function getOSType() {
-  OSNAME=$(AWS_SHARED_CREDENTIALS_FILE="$AWS_SHARED_CREDENTIALS_FILE" \
-    aws --profile="$AWSPROF" --region="$AWS_REGION" \
-    ssm start-session --target="$i" \
+  OSNAME=$(aws ssm start-session --target="$i" \
     --document=AWS-StartInteractiveCommand \
     --parameters="command=cat /etc/os-release | grep --extended-regexp ^NAME=" \
     --output text)
@@ -72,9 +59,7 @@ function getOSType() {
 }
 
 function getHost() {
-  HOST=$(AWS_SHARED_CREDENTIALS_FILE="$AWS_SHARED_CREDENTIALS_FILE" \
-    aws --profile="$AWSPROF" --region="$AWS_REGION" \
-    ssm start-session --target="$i" \
+  HOST=$(aws ssm start-session --target="$i" \
     --document=AWS-StartNonInteractiveCommand \
     --parameters="command=hostname" \
     --output text)
@@ -82,23 +67,17 @@ function getHost() {
 }
 
 function portForward() {
-  AWS_SHARED_CREDENTIALS_FILE="$AWS_SHARED_CREDENTIALS_FILE" \
-    aws --profile="$AWSPROF" --region="$AWS_REGION" \
-    ssm start-session --target="$i" \
+  aws ssm start-session --target="$i" \
     --document=AWS-StartPortForwardingSession --parameters="localPortNumber=5555,portNumber=6666"
 }
 
 function installNC() {
   if [[ "$OS" == "Debian" ]]; then
-    AWS_SHARED_CREDENTIALS_FILE="$AWS_SHARED_CREDENTIALS_FILE" \
-      aws --profile="$AWSPROF" --region="$AWS_REGION" \
-      ssm start-session --target="$i" \
+    aws ssm start-session --target="$i" \
       --document=AWS-StartInteractiveCommand \
       --parameters="command='sudo apt-get --yes install netcat'"
   else
-    AWS_SHARED_CREDENTIALS_FILE="$AWS_SHARED_CREDENTIALS_FILE" \
-      aws --profile="$AWSPROF" --region="$AWS_REGION" \
-      ssm start-session --target="$i" \
+    aws ssm start-session --target="$i" \
       --document=AWS-StartInteractiveCommand \
       --parameters="command='sudo dnf --assumeyes install netcat'"
   fi
@@ -106,15 +85,11 @@ function installNC() {
 
 function startListen() {
   if [[ "$OS" == "Debian" ]]; then
-    AWS_SHARED_CREDENTIALS_FILE="$AWS_SHARED_CREDENTIALS_FILE" \
-      aws --profile="$AWSPROF" --region="$AWS_REGION" \
-      ssm start-session --target="$i" \
+    aws ssm start-session --target="$i" \
       --document=AWS-StartInteractiveCommand \
       --parameters="command='cd ~/src/ioc_scan; nc -l -p 6666 | tar --extract --gzip --file -'"
   else
-    AWS_SHARED_CREDENTIALS_FILE="$AWS_SHARED_CREDENTIALS_FILE" \
-      aws --profile="$AWSPROF" --region="$AWS_REGION" \
-      ssm start-session --target="$i" \
+    aws ssm start-session --target="$i" \
       --document=AWS-StartInteractiveCommand \
       --parameters="command='cd ~/src/ioc_scan; nc -l 6666 | tar --extract --gzip --file -'"
   fi
@@ -141,9 +116,7 @@ for i in "${serverList[@]}"; do
 
   # Create ~/src/ioc_scan directory on Instance
   echo "Verifying ~/src/ioc_scan directory on $instanceName"
-  AWS_SHARED_CREDENTIALS_FILE="$AWS_SHARED_CREDENTIALS_FILE" \
-    aws --profile="$AWSPROF" --region="$AWS_REGION" \
-    ssm start-session --target="$i" \
+  aws ssm start-session --target="$i" \
     --document=AWS-StartInteractiveCommand \
     --parameters="command='if [ ! -d ~/src/ioc_scan ]; then mkdir --parents ~/src/ioc_scan; fi'"
 
@@ -164,9 +137,7 @@ for i in "${serverList[@]}"; do
 
   # Run ioc_scanner.py on target instance
   echo "Scan $instanceName for IOC Hashes"
-  AWS_SHARED_CREDENTIALS_FILE="$AWS_SHARED_CREDENTIALS_FILE" \
-    aws --profile="$AWSPROF" --region="$AWS_REGION" \
-    ssm start-session --target="$i" \
+  aws ssm start-session --target="$i" \
     --document=AWS-StartInteractiveCommand \
     --parameters="command=python3 ~/src/ioc_scan/ioc_scanner.py" >> "$logfile"
 
