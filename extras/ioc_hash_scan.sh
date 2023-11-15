@@ -140,7 +140,7 @@ for i in "${serverList[@]}"; do
   echo "Beginning port forwarding (local port 5555 to remote port 6666)"
   portForward &
 
-  # Create ~/src/ioc_scan directory on Instance
+  # Create ~/src/ioc_scan directory on instance
   echo "Verifying ~/src/ioc_scan directory on $instanceName"
   AWS_SHARED_CREDENTIALS_FILE="$AWS_CREDENTIALS_FILE" \
     aws --profile="$AWSPROF" --region="$AWS_REGION" \
