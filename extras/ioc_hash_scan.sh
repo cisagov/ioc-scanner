@@ -154,11 +154,11 @@ for i in "${serverList[@]}"; do
   echo "Begin listening on $instanceName (port 6666)"
   startListen &
 
-  # Copy latest ioc_scanner.py to target instance
+  # Copy ioc_scanner.py to target instance
   curdir=$(pwd)
   cd "$pydir" || exit
 
-  echo "Upload lastest ioc_scanner.py to $instanceName"
+  echo "Upload ioc_scanner.py to $instanceName"
   tar --create --gzip --file - ./ioc_scanner.py | nc localhost 5555
 
   cd "$curdir" || exit
