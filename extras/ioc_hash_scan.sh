@@ -137,7 +137,7 @@ for i in "${serverList[@]}"; do
   echo "Beginning scan of instance $i -- $instanceName" | tee -a "$logfile"
 
   # Start Port Forwarding
-  echo "Begining port forwarding"
+  echo "Beginning port forwarding (local port 5555 to remote port 6666)"
   portForward &
 
   # Create ~/src/ioc_scan directory on Instance
