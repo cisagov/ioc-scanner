@@ -116,7 +116,7 @@ function startListen() {
       aws --profile="$AWSPROF" --region="$AWS_REGION" \
       ssm start-session --target="$i" \
       --document=AWS-StartInteractiveCommand \
-      --parameters="command='cd ~/src/ioc_scan; nc -l 6666 | tar xzf -'"
+      --parameters="command='cd ~/src/ioc_scan; nc -l 6666 | tar --extract --gzip --file -'"
   fi
 }
 
