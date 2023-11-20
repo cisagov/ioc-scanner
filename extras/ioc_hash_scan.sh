@@ -6,7 +6,12 @@
 # The filename specified in the first argument
 # (instance-list-file) should contain a list of instance id strings, one per line.
 #
-# Usage: AWS_SHARED_CREDENTIALS_FILE=~/.aws/my-creds AWS_REGION=us-east-1 AWS_PROFILE=my-profile ./ioc_hash_scan.sh instance-list-file
+# The following environmental varialbles must be set:
+# AWS_SHARED_CREDENTAILS_FILE
+# AWS_REGION
+# AWS_PROFILE
+#
+# Usage: ./ioc_hash_scan.sh instance-list-file
 #
 # This script assumes that it exists in the ioc-scanner/extras/ directory.
 # If it does not, please edit the variable $pydir to point to
@@ -20,7 +25,7 @@ set -o pipefail
 pydir="../src/ioc_scan/"
 
 if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ $# -gt 1 ]; then
-  echo Usage: AWS_SHARED_CREDENTIALS_FILE=~/.aws/my-creds AWS_REGION=us-east-1 AWS_PROFILE=my-profile "$0" instance-list-file
+  echo Usage: "$0" instance-list-file
   exit 1
 fi
 
@@ -29,6 +34,14 @@ if [ ! -f "$1" ]; then
   echo Instance List file "$1" does not exist - exiting.
   exit 1
 fi
+
+# Check if environmental variables are set
+CRED=$(env | grep AWS_SHARED_CREDENTIALS_FILE)
+REG=$(env | grep AWS_REGION)
+PROF=$(env | grep AWS_PROFILE)
+[[ -z "$CRED" ]] && { echo "AWS_SHARED_CREDENTIALS_FILE environmental variable is not set."; exit 1; }
+[[ -z "$REG" ]] && { echo "AWS_REGION environmental variable is not set."; exit 1; }
+[[ -z "$PROF" ]] && { echo "AWS_PROFILE environmental variable is not set."; exit 1; }
 
 # Read instance id strings from file.  [[ -n "$line" ]] handles the case where
 # the last line doesn't end with a newline.
