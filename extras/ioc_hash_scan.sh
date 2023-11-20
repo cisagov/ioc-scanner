@@ -1,6 +1,7 @@
 #!/bin/bash
 #
-# This script will scan AWS instances occurances of IOC hashes listed in the blob at src/ioc_scan/ioc_scanner.py
+# This script will scan AWS instances for occurrences of IOC hashes listed in
+# the blob at src/ioc_scan/ioc_scanner.py
 #
 # The filename specified in the first argument
 # (instance-list-file) should contain a list of instance id strings, one per line.
