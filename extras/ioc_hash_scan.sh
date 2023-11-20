@@ -39,9 +39,18 @@ fi
 CRED=$(env | grep AWS_SHARED_CREDENTIALS_FILE)
 REG=$(env | grep AWS_REGION)
 PROF=$(env | grep AWS_PROFILE)
-[[ -z "$CRED" ]] && { echo "AWS_SHARED_CREDENTIALS_FILE environmental variable is not set."; exit 1; }
-[[ -z "$REG" ]] && { echo "AWS_REGION environmental variable is not set."; exit 1; }
-[[ -z "$PROF" ]] && { echo "AWS_PROFILE environmental variable is not set."; exit 1; }
+[[ -z "$CRED" ]] && {
+  echo "AWS_SHARED_CREDENTIALS_FILE environmental variable is not set."
+  exit 1
+}
+[[ -z "$REG" ]] && {
+  echo "AWS_REGION environmental variable is not set."
+  exit 1
+}
+[[ -z "$PROF" ]] && {
+  echo "AWS_PROFILE environmental variable is not set."
+  exit 1
+}
 
 # Read instance id strings from file.  [[ -n "$line" ]] handles the case where
 # the last line doesn't end with a newline.
