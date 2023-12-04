@@ -6,8 +6,8 @@
 # The filename specified in the first argument
 # (instance-list-file) should contain a list of instance id strings, one per line.
 #
-# The following environmental varialbles must be set:
-# AWS_SHARED_CREDENTAILS_FILE
+# The following environment variables must be set:
+# AWS_SHARED_CREDENTIALS_FILE
 # AWS_REGION
 # AWS_PROFILE
 #
