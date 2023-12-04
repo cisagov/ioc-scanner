@@ -35,20 +35,20 @@ if [ ! -f "$1" ]; then
   exit 1
 fi
 
-# Check if environmental variables are set
+# Check if environment variables are set
 CRED=$(env | grep AWS_SHARED_CREDENTIALS_FILE)
 REG=$(env | grep AWS_REGION)
 PROF=$(env | grep AWS_PROFILE)
 [[ -z "$CRED" ]] && {
-  echo "AWS_SHARED_CREDENTIALS_FILE environmental variable is not set."
+  echo "AWS_SHARED_CREDENTIALS_FILE environment variable is not set."
   exit 1
 }
 [[ -z "$REG" ]] && {
-  echo "AWS_REGION environmental variable is not set."
+  echo "AWS_REGION environment variable is not set."
   exit 1
 }
 [[ -z "$PROF" ]] && {
-  echo "AWS_PROFILE environmental variable is not set."
+  echo "AWS_PROFILE environment variable is not set."
   exit 1
 }
 
