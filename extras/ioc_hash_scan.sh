@@ -117,8 +117,8 @@ function startListen() {
 }
 
 function getSessionID() {
-        SID=$(grep "Connection accepted for session" "$logfile" | tail --lines=1)
-        echo "$SID" | cut -d'[' -f 2 | cut -d']' -f 1
+  SID=$(grep "Connection accepted for session" "$logfile" | tail --lines=1)
+  echo "$SID" | cut -d'[' -f 2 | cut -d']' -f 1
 }
 
 ## MAIN SCRIPT
