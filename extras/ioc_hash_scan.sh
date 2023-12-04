@@ -118,6 +118,11 @@ function startListen() {
   fi
 }
 
+function getSessionID() {
+        SID=$(grep "Connection accepted for session" "$logfile" | tail --lines=1)
+        echo "$SID" | cut -d'[' -f 2 | cut -d']' -f 1
+}
+
 ## MAIN SCRIPT
 echo "IOC Hash Scan - $today-$(date +%H:%M:%S)" > "$logfile"
 
@@ -164,12 +169,10 @@ for i in "${serverList[@]}"; do
     --document=AWS-StartInteractiveCommand \
     --parameters="command=python3 ~/src/ioc_scan/ioc_scanner.py" >> "$logfile"
 
-  # Killing port forwading so we can do this again on the next Instance.
-  while pgrep -fq session-manager-plugin; do
-    pkill session-manager-plugin
-    # We need to wait, as some race conditions can occure.
-    sleep 5
-  done
+  # Terminate session so we can do this again on the next instance.
+  id=$(getSessionID)
+  aws ssm terminate-session --session-id="$id"
+
   echo "------------------------------------------------------------------------" | tee -a "$logfile"
 done
 
