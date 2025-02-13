@@ -1,4 +1,3 @@
-#!/usr/bin/env pytest -vs
 """Tests for ioc_scan."""
 
 # Standard Python Libraries
