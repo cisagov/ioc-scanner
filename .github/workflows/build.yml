@@ -217,7 +217,9 @@ jobs:
           - macos-latest
           - ubuntu-24.04-arm
           - ubuntu-latest
-          - windows-latest
+          # TODO: Re-enable support for Windows when that becomes
+          # possible.  See #62 for more details.
+          # - windows-latest
         python-version:
           - "3.9"
           - "3.10"
@@ -429,7 +431,9 @@ jobs:
           - macos-latest
           - ubuntu-24.04-arm
           - ubuntu-latest
-          - windows-latest
+          # TODO: Re-enable support for Windows when that becomes
+          # possible.  See #62 for more details.
+          # - windows-latest
         python-version:
           - "3.9"
           - "3.10"
