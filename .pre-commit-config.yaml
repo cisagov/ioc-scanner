@@ -173,7 +173,6 @@ repos:
         # checking between environments.
         additional_dependencies:
           - types-docopt
-          - types-setuptools
   - repo: https://github.com/pypa/pip-audit
     rev: v2.9.0
     hooks:
