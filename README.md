@@ -1,8 +1,10 @@
 # ioc-scanner 🔎🆖 #
 
 [![GitHub Build Status](https://github.com/cisagov/ioc-scanner/workflows/build/badge.svg)](https://github.com/cisagov/ioc-scanner/actions)
+[![License](https://img.shields.io/github/license/cisagov/ioc-scanner)](https://spdx.org/licenses/)
 [![CodeQL](https://github.com/cisagov/ioc-scanner/workflows/CodeQL/badge.svg)](https://github.com/cisagov/ioc-scanner/actions/workflows/codeql-analysis.yml)
 [![Coverage Status](https://coveralls.io/repos/github/cisagov/ioc-scanner/badge.svg?branch=develop)](https://coveralls.io/github/cisagov/ioc-scanner?branch=develop)
+[![Code Style](https://img.shields.io/badge/Code%20Style-black-black)](https://github.com/psf/black)
 
 The ioc-scanner can search a filesystem for indicators of compromise (IoC).
 Indicators are defined by their `md5`, `sha-1`, or `sha-256` hashes.  The tool
