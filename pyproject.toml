@@ -35,7 +35,7 @@ classifiers = [
 dependencies = [
     "docopt",
 ]
-description = "IoC scanning tool"
+description = "Tool to scan for Indictors of Compromise (IoC)"
 dynamic = ["readme", "version"]
 keywords = ["ioc scanner indicators compromise md5",]
 license = "CC0-1.0"
