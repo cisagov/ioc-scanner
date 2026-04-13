@@ -12,7 +12,7 @@ requires = [
     # 77.0.0 was the first version of setuptools to support license
     # expressions (in compliance with PEP 639):
     # https://setuptools.pypa.io/en/stable/history.html#v77-0-0
-    "setuptools>=77.0.0"
+    "setuptools>=82.0.1"
 ]
 
 [project]
