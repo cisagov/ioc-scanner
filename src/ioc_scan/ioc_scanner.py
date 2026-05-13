@@ -78,7 +78,7 @@ HASH_REGEXES = [
 
 def hash_file(file):
     """Generate supported hashes for a given file."""
-    hashers = list()
+    hashers = []
     for hasher in AVAILABLE_HASHERS:
         try:
             hashers.append(hasher(usedforsecurity=False))
