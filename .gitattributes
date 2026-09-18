@@ -1,0 +1,6 @@
+* text=auto
+
+# Ensure that test fixture files retain their LF line endings so that their
+# cryptographic hashes match the expected test values on all platforms.
+tests/targets/* text eol=lf
+tests/testblob.txt text eol=lf
